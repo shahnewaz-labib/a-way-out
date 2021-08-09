@@ -9,7 +9,7 @@ int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
 bool valid(int x, int y) {
-	if(x < 0 or x > M or y < 0 or y > N)
+	if(x < 0 or x >= N or y < 0 or y >=M)
 		return false;
 	return true;
 }
@@ -77,7 +77,7 @@ void findGoodGrid()
 	cout << "Final badness " << prevBadness << "\n";
 }
 
-int main()
+void showGrid()
 {
 	srand(time(NULL));
 	findGoodGrid();
@@ -92,3 +92,8 @@ int main()
 		cout << "\n";
 	}
 }
+
+
+// int main(){
+//     showGrid();
+// }
