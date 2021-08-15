@@ -8,7 +8,8 @@ int main()
   srand(time(NULL));
   int N = 10;
   int M = 10;
-  sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!", sf::Style::Close);
+  int mx = -1;
+  sf::RenderWindow window(sf::VideoMode(500, 500), "A Way Out", sf::Style::Close);
   vector<vector<int>> grid = findGoodGrid(N, M);
 
   sf::RectangleShape shape[N][M];
@@ -16,6 +17,7 @@ int main()
   {
     for (int j = 0; j < M; ++j)
     {
+      mx = max(grid[i][j], mx);
       shape[i][j].setSize(sf::Vector2f(50.0f, 50.0f));
       if (grid[i][j] == -1)
       {
@@ -29,8 +31,9 @@ int main()
       }
       else
       {
+        shape[i][j].setFillColor(sf::Color( (255 - 255 * grid[i][j]/255.0), (255 - 255 * grid[i][j]/255.0), ( 255 - 255 * grid[i][j]/255.0) ));
         shape[i][j].setOutlineThickness(2.0f);
-        shape[i][j].setOutlineColor(sf::Color::Cyan);
+        shape[i][j].setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
       }
     }
   }
@@ -38,7 +41,12 @@ int main()
   {
     for (int j = 0; j < M; ++j)
     {
-      shape[i][j].setPosition(sf::Vector2f(50.0f * i, 50.0f * j));
+      if(grid[i][j] == mx) {
+        shape[i][j].setFillColor(sf::Color(0, 0, 0));
+        shape[i][j].setOutlineThickness(2.0f);
+        shape[i][j].setOutlineColor(sf::Color(0, 0, 0));
+      }
+      shape[i][j].setPosition(sf::Vector2f(50.0f * j, 50.0f * i));
     }
   }
   // shape.setFillColor(sf::Color::Green);

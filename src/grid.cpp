@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <dbg.h>
 using namespace std;
 
 // const int N = 10;
@@ -18,7 +19,9 @@ vector<vector<int>> generate(int N, int M)
 
 	vector<vector<int>> genGrid(N, vector<int>(M, -1));
 
-	int x = rand() % N, y = rand() % M, cnt = 1;
+	vector <vector<int> > startPos = { {0, M-1}, {0, N-1} };
+
+	int x = startPos[0][rand() % 2], y = startPos[1][rand() % 2], cnt = 1, mx = -1;
 	//cout << x << " " << y << "\n";
 	genGrid[x][y] = 0;
 
@@ -39,14 +42,24 @@ vector<vector<int>> generate(int N, int M)
 			}
 		}
 
-		if (stuck)
+		if (stuck) {
+			mx = max(mx, cnt-1);
 			break;
+		}
 
 		int pos = rand() % ok.size();
 		x += dx[ok[pos]];
 		y += dy[ok[pos]];
 		//cout << x << " " << y << "\n";
 		genGrid[x][y] = cnt++;
+	}
+
+	for(int i = 0; i < N; ++i) {
+		for(int j = 0; j < M; ++j) {
+			if(genGrid[i][j] != -1) {
+				genGrid[i][j] = (mx - genGrid[i][j]);
+			}
+		}
 	}
 
 	return genGrid;
@@ -57,7 +70,7 @@ vector<vector<int>> findGoodGrid(int N, int M)
 	int prevBadness = 1e9 + 7, badness;
 	vector<vector<int>> grid(N, vector<int>(M, -1));
 
-	for (int T = 0; T < 100; ++T)
+	for (int T = 0; T < 1000; ++T)
 	{
 		badness = 0;
 		vector<vector<int>> tempGrid = generate(N, M);
