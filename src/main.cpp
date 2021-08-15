@@ -25,7 +25,7 @@ bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
 vector<vector<int>> findGoodGrid(int,int);
 
 int main(){
-    int visitedNodes = 1;
+    int visitedNodes = 0;
     vector<sf::Vector2i> YellowPath;
     sf::Vector2i startingCell;
 
@@ -107,9 +107,9 @@ int main(){
         sf::Vector2i pos = sf::Mouse::getPosition(window);
         swap(pos.x,pos.y);
 
-        pos /=50;
+        pos /= 50;
 
-        if(pos.x<N && pos.x>=0 && pos.y<M && pos.y>=0){
+        if(pos.x<N && pos.x >= 0 and pos.y<M and pos.y >= 0){
             int i=YellowPath.back().x;
             int j=YellowPath.back().y;
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
@@ -129,19 +129,18 @@ int main(){
                     //                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
                 }
             } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-
-                if(pos == YellowPath.back() && YellowPath.size()>1){
-                    shape[pos.x][pos.y].setFillColor(sf::Color::White);
-                    visited[pos.x][pos.y] = 0;
-                    visitedNodes--;
-                    YellowPath.pop_back();
-                    i=YellowPath.back().x;
-                    j=YellowPath.back().y;
-                    if(startingCell!=sf::Vector2i(i,j))
-                        shape[i][j].setFillColor(sf::Color::Red);
+                if(visited[pos.x][pos.y] && YellowPath.size()>1){
+                    while(YellowPath.back() != pos) {
+                        auto last = YellowPath.back();
+                        shape[last.x][last.y].setFillColor(sf::Color::White);
+                        visited[last.x][last.y] = false;
+                        YellowPath.pop_back();
+                        visitedNodes--;
+                    }
+                   if(pos != startingCell)
+                    shape[pos.x][pos.y].setFillColor(sf::Color::Red);
                 }
             }
-            //             cout<<YellowPath.size()<<"\n";
         }
         window.clear();
         for (int i = 0; i < N; ++i)
@@ -154,7 +153,7 @@ int main(){
 
         window.display();
         if(visitedNodes == mx){
-            cout<<"Done"<<"\n";
+            printf("Done");                                                
             return 0;
         }
     }
