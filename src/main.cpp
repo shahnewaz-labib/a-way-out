@@ -1,85 +1,162 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
-#include <iostream>
 #include <vector>
+#include <iostream>
 using namespace std;
 
-vector <vector<int>> findGoodGrid(int,int);
-void showGrid(int,int,vector <vector<int>>);
+// vector<vector<int>> findGoodGrid(int, int);
+sf::Vector2i Right(1,0);
+sf::Vector2i Left(-1,0);
+sf::Vector2i Down(0,-1);
+sf::Vector2i Up(0,1);
 
-int main()
-{
-  srand(time(NULL));
-  int N = 10;
-  int M = 10;
-  sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!", sf::Style::Close);
-  vector<vector<int>> grid = findGoodGrid(N, M);
-//   showGrid(N,M,grid);
+sf::Vector2i Dirs[4]={Right,Left,Down,Up};
 
-  sf::RectangleShape shape[N][M];
-  for (int i = 0; i < N; ++i)
-  {
-    for (int j = 0; j < M; ++j)
-    {
-      shape[i][j].setSize(sf::Vector2f(50.0f, 50.0f));
-      if (grid[i][j] == -1)
-      {
-        shape[i][j].setFillColor(sf::Color::Green);
-        shape[i][j].setOutlineThickness(2.0f);
-        shape[i][j].setOutlineColor(sf::Color::Cyan);
-      }
-      else if (grid[i][j] == 0)
-      {
-        shape[i][j].setFillColor(sf::Color::Blue);
-      }
-      else
-      {
-        shape[i][j].setOutlineThickness(2.0f);
-        shape[i][j].setOutlineColor(sf::Color::Cyan);
-      }
+bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
+    for(auto dir:Dirs){
+//         cout<<(prevPos+dir).x<<" "<<(prevPos+dir).y<<"\n";
+        if(curPos == prevPos+dir)
+            return 1;
     }
-  }
-  for (int i = 0; i < N; ++i)
-  {
-    for (int j = 0; j < M; ++j)
-    {
-      shape[i][j].setPosition(sf::Vector2f(50.0f * i, 50.0f * j));
-    }
-  }
-  // shape.setFillColor(sf::Color::Green);
-  // shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));
-  // shape.setPosition(sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f));
+    return 0;
+}
 
-  while (window.isOpen())
-  {
-    sf::Event event;
-    while (window.pollEvent(event))
-    {
-      if (event.type == sf::Event::Closed)
-        window.close();
-    }
-    
-    sf::Vector2i pos = sf::Mouse::getPosition(window);
-    pos /=50;
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-        if(shape[pos.x][pos.y].getFillColor()==sf::Color::White)
-            shape[pos.x][pos.y].setFillColor(sf::Color::Yellow);
-        else if (shape[pos.x][pos.y].getFillColor()==sf::Color::Yellow)
-             shape[pos.x][pos.y].setFillColor(sf::Color::White);
+vector<vector<int>> findGoodGrid(int,int);
+
+int main(){
+    int visitedNodes = 1;
+    vector<sf::Vector2i> YellowPath;
+
+    srand(time(NULL));
+    int N = 10;
+    int M = 10;
+    int mx = -1;
+    sf::RenderWindow window(sf::VideoMode(500, 500), "A Way Out", sf::Style::Close);
+    vector<vector<int>> grid = findGoodGrid(N, M);
+
+    bool visited[N][M]{};
+
+    puts("");
+
+    for(int i=0;i<N;i++) {
+        for(int j=0;j<M;j++) {
+            cout << grid[i][j] << "\t";
+        }
+        puts("");
     }
 
-    window.clear();
+    sf::RectangleShape shape[N][M];
     for (int i = 0; i < N; ++i)
     {
-      for (int j = 0; j < M; ++j)
-      {
-        window.draw(shape[i][j]);
-      }
+        for (int j = 0; j < M; ++j)
+        {
+            mx = max(grid[i][j], mx);
+            shape[i][j].setSize(sf::Vector2f(50.0f, 50.0f));
+            if (grid[i][j] == -1)
+            {
+                shape[i][j].setFillColor(sf::Color::Green);
+                shape[i][j].setOutlineThickness(2.0f);
+                shape[i][j].setOutlineColor(sf::Color::Cyan);
+            }
+            else if (grid[i][j] == 0)
+            {
+                shape[i][j].setFillColor(sf::Color::Blue);
+                YellowPath.emplace_back(sf::Vector2i(i,j));
+                visited[i][j] = 1;
+            }
+            else
+            {
+                shape[i][j].setFillColor(sf::Color( (255 - 255 * grid[i][j]/255.0), (255 - 255 * grid[i][j]/255.0), ( 255 - 255 * grid[i][j]/255.0) ));
+                shape[i][j].setOutlineThickness(2.0f);
+                shape[i][j].setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
+            }
+        }
     }
 
-    window.display();
-  }
+    for (int i = 0; i < N; ++i)
+    {
+        for (int j = 0; j < M; ++j)
+        {
+            if(grid[i][j] == mx) {
+                shape[i][j].setFillColor(sf::Color(0, 0, 0));
+                shape[i][j].setOutlineThickness(2.0f);
+                shape[i][j].setOutlineColor(sf::Color(0, 0, 0));
+            }
+            shape[i][j].setPosition(sf::Vector2f(50.0f * j, 50.0f * i));
+        }
+    }
+    // shape.setFillColor(sf::Color::Green);
+    // shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));
+    // shape.setPosition(sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f));
 
-  return 0;
+
+
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        sf::Vector2i pos = sf::Mouse::getPosition(window);
+        swap(pos.x,pos.y);
+
+        pos /=50;
+
+        if(pos.x<N && pos.x>=0 && pos.y<M && pos.y>=0){
+            int i=YellowPath.back().x;
+            int j=YellowPath.back().y;
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+//                 cout<<pos.x<<" "<<pos.y<<"\n";
+
+                if(grid[pos.x][pos.y]!=-1 && isNextCell(YellowPath.back(),pos) && !visited[pos.x][pos.y]){
+                    shape[pos.x][pos.y].setFillColor(sf::Color::Red);
+                    visited[pos.x][pos.y] = 1;
+                    visitedNodes++;
+                    if(YellowPath.size()>1){
+                        shape[i][j].setFillColor(sf::Color::Yellow);
+                    }
+                    YellowPath.emplace_back(pos);
+                }
+                else if (shape[pos.x][pos.y].getFillColor()==sf::Color::Yellow){
+
+//                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
+                }
+            } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+
+                if(pos == YellowPath.back()){
+                    shape[pos.x][pos.y].setFillColor(sf::Color::White);
+                    visited[pos.x][pos.y] = 0;
+                    visitedNodes--;
+                    YellowPath.pop_back();
+                    if(YellowPath.size()>1){
+                        i=YellowPath.back().x;
+                        j=YellowPath.back().y;
+                        shape[i][j].setFillColor(sf::Color::Red);
+                    }
+                }
+            }
+//             cout<<YellowPath.size()<<"\n";
+        }
+        window.clear();
+        for (int i = 0; i < N; ++i)
+        {
+            for (int j = 0; j < M; ++j)
+            {
+                window.draw(shape[i][j]);
+            }
+        }
+
+        window.display();
+        if(visitedNodes == mx){
+            cout<<"Done"<<"\n";
+            return 0;
+        }
+    }
+
+    return 0;
 }
