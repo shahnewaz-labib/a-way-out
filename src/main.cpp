@@ -15,7 +15,7 @@ sf::Vector2i Dirs[4]={Right,Left,Down,Up};
 
 bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
     for(auto dir:Dirs){
-//         cout<<(prevPos+dir).x<<" "<<(prevPos+dir).y<<"\n";
+        //         cout<<(prevPos+dir).x<<" "<<(prevPos+dir).y<<"\n";
         if(curPos == prevPos+dir)
             return 1;
     }
@@ -27,6 +27,7 @@ vector<vector<int>> findGoodGrid(int,int);
 int main(){
     int visitedNodes = 1;
     vector<sf::Vector2i> YellowPath;
+    sf::Vector2i startingCell;
 
     srand(time(NULL));
     int N = 10;
@@ -63,6 +64,7 @@ int main(){
             {
                 shape[i][j].setFillColor(sf::Color::Blue);
                 YellowPath.emplace_back(sf::Vector2i(i,j));
+                startingCell=sf::Vector2i(i,j);
                 visited[i][j] = 1;
             }
             else
@@ -111,7 +113,7 @@ int main(){
             int i=YellowPath.back().x;
             int j=YellowPath.back().y;
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-//                 cout<<pos.x<<" "<<pos.y<<"\n";
+                //                 cout<<pos.x<<" "<<pos.y<<"\n";
 
                 if(grid[pos.x][pos.y]!=-1 && isNextCell(YellowPath.back(),pos) && !visited[pos.x][pos.y]){
                     shape[pos.x][pos.y].setFillColor(sf::Color::Red);
@@ -124,23 +126,22 @@ int main(){
                 }
                 else if (shape[pos.x][pos.y].getFillColor()==sf::Color::Yellow){
 
-//                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
+                    //                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
                 }
             } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
 
-                if(pos == YellowPath.back()){
+                if(pos == YellowPath.back() && YellowPath.size()>1){
                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
                     visited[pos.x][pos.y] = 0;
                     visitedNodes--;
                     YellowPath.pop_back();
-                    if(YellowPath.size()>1){
-                        i=YellowPath.back().x;
-                        j=YellowPath.back().y;
+                    i=YellowPath.back().x;
+                    j=YellowPath.back().y;
+                    if(startingCell!=sf::Vector2i(i,j))
                         shape[i][j].setFillColor(sf::Color::Red);
-                    }
                 }
             }
-//             cout<<YellowPath.size()<<"\n";
+            //             cout<<YellowPath.size()<<"\n";
         }
         window.clear();
         for (int i = 0; i < N; ++i)
