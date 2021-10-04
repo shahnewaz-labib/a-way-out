@@ -100,55 +100,72 @@ int main(){
     // shape.setPosition(sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f));
 
 
-
+    bool isWindowFocused = true;
 
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if(event.type == sf::Event::GainedFocus) {
+                // cout << "gained focus\n";
+                isWindowFocused = true;
+            }
+            if(event.type == sf::Event::LostFocus) {
+                // cout << "Lost focus\n";
+                isWindowFocused = false;
+            }
+
+            if (event.type == sf::Event::Closed) {
                 window.close();
-        }
-
-        sf::Vector2i pos = sf::Mouse::getPosition(window);
-        swap(pos.x,pos.y);
-
-        pos /= 50;
-
-        if(pos.x<N && pos.x >= 0 and pos.y<M and pos.y >= 0){
-            int i=YellowPath.back().x;
-            int j=YellowPath.back().y;
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-                //                 cout<<pos.x<<" "<<pos.y<<"\n";
-
-                if(grid[pos.x][pos.y]!=-1 && isNextCell(YellowPath.back(),pos) && !visited[pos.x][pos.y]){
-                    shape[pos.x][pos.y].setFillColor(sf::Color::Red);
-                    visited[pos.x][pos.y] = 1;
-                    visitedNodes++;
-                    if(YellowPath.size()>1){
-                        shape[i][j].setFillColor(sf::Color::Yellow);
-                    }
-                    YellowPath.emplace_back(pos);
+            }
+            if(event.type == sf::Event::KeyPressed) {
+                if(event.key.code == sf::Keyboard::Q) {
+                    // cout << "q pressed. Quitting.\n";
+                    window.close();
+                
                 }
-                else if (shape[pos.x][pos.y].getFillColor()==sf::Color::Yellow){
+            }
+            if(isWindowFocused) {
+                sf::Vector2i pos = sf::Mouse::getPosition(window);
+                swap(pos.x,pos.y);
 
-                    //                     shape[pos.x][pos.y].setFillColor(sf::Color::White);
-                }
-            } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-                if(visited[pos.x][pos.y] && YellowPath.size()>1){
-                    while(YellowPath.back() != pos) {
-                        auto last = YellowPath.back();
-                        shape[last.x][last.y].setFillColor(sf::Color::White);
-                        visited[last.x][last.y] = false;
-                        YellowPath.pop_back();
-                        visitedNodes--;
+                pos /= 50;
+
+                if(pos.x<N && pos.x >= 0 and pos.y<M and pos.y >= 0){
+                    int i=YellowPath.back().x;
+                    int j=YellowPath.back().y;
+                    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+                        if(grid[pos.x][pos.y] !=- 1 && isNextCell(YellowPath.back(), pos) && !visited[pos.x][pos.y]){
+                            shape[pos.x][pos.y].setFillColor(sf::Color::Red);
+                            visited[pos.x][pos.y] = 1;
+                            visitedNodes++;
+                            if(YellowPath.size()>1){
+                                shape[i][j].setFillColor(sf::Color::Yellow);
+                            }
+                            YellowPath.emplace_back(pos);
+                        }
+                    } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+                        if(visited[pos.x][pos.y] && YellowPath.size()>1){
+                            while(YellowPath.back() != pos) {
+                                auto last = YellowPath.back();
+                                shape[last.x][last.y].setFillColor(sf::Color::White);
+                                visited[last.x][last.y] = false;
+                                YellowPath.pop_back();
+                                visitedNodes--;
+                            }
+                            if(pos != startingCell) {
+                                shape[pos.x][pos.y].setFillColor(sf::Color::Red);
+                            }
+                        }
                     }
-                   if(pos != startingCell)
-                    shape[pos.x][pos.y].setFillColor(sf::Color::Red);
                 }
             }
         }
+
+
+        
+
         window.clear();
         for (int i = 0; i < N; ++i)
         {
