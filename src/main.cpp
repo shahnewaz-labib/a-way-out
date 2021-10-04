@@ -3,6 +3,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <vector>
 #include <iostream>
+#include "../Classes/grid.hpp"
 using namespace std;
 
 // vector<vector<int>> findGoodGrid(int, int);
@@ -22,8 +23,6 @@ bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
     return 0;
 }
 
-vector<vector<int>> findGoodGrid(int,int);
-
 int main(){
     int visitedNodes = 0;
     vector<sf::Vector2i> YellowPath;
@@ -34,7 +33,7 @@ int main(){
     int M = 10;
     int mx = -1;
     sf::RenderWindow window(sf::VideoMode(500, 500), "A Way Out", sf::Style::Close);
-    vector<vector<int>> grid = findGoodGrid(N, M);
+    Grid grid(N, M);
 
     bool visited[N][M]{};
 
