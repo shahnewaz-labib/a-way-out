@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Image.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <vector>
 #include <iostream>
 #include "../Classes/grid.hpp"
+
 using namespace std;
 
 // vector<vector<int>> findGoodGrid(int, int);
@@ -33,6 +35,12 @@ int main(){
     int M = 10;
     int mx = -1;
     sf::RenderWindow window(sf::VideoMode(500, 500), "A Way Out", sf::Style::Close);
+
+    sf::Image icon;
+    icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+
     Grid grid(N, M);
 
     bool visited[N][M]{};
