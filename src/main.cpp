@@ -1,10 +1,19 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <vector>
 #include <iostream>
-#include "../Classes/grid.hpp"
+#include "include/grid.hpp"
+#define tileSize 50
+#define tileGap 20
+#define lineHeight tileSize+tileGap
+#define lineWidth 5
 
 using namespace std;
 
@@ -25,42 +34,74 @@ bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
     return 0;
 }
 
+sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
+    int h = lineHeight;
+    int w = lineWidth;
+
+    sf::RectangleShape R;
+    int i1 = prevPos.x, j1 = prevPos.y;
+    int i2 = curPos.x, j2 = curPos.y;
+
+    // i -- Row, j -- Column
+
+    double Y,X,F;
+
+    if(i1 == i2){ // Horizontal
+        swap(h,w);
+        Y = i1*tileSize + (i1+1)*tileGap + tileSize/2.0;
+        F = min(j1,j2);
+        X = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
+    } else { // Vertical
+        X = j1*tileSize + (j1+1)*tileGap + tileSize/2.0;
+        F = min(i1,i2);
+        Y = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
+    }
+    R.setSize(sf::Vector2f(w,h));
+    R.setPosition(sf::Vector2f(X,Y));
+    return R;
+}
+
 int main(){
     int visitedNodes = 0;
     vector<sf::Vector2i> YellowPath;
+    vector<sf::RectangleShape> LinePath;
     sf::Vector2i startingCell;
 
+
     srand(time(NULL));
-    int N = 10;
-    int M = 10;
+    int N = 6;
+    int M = 6;
     int mx = -1;
-    sf::RenderWindow window(sf::VideoMode(500, 500), "A Way Out", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(N*tileSize+(N+1)*tileGap, M*tileSize+(M+1)*tileGap), "A Way Out", sf::Style::Close);
 
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-
     Grid grid(N, M);
 
-    bool visited[N][M]{};
+    bool visited[N][M];
 
-    puts("");
+    std::cout<<'\n';
 
     for(int i=0;i<N;i++) {
         for(int j=0;j<M;j++) {
             cout << grid[i][j] << "\t";
         }
-        puts("");
+        std::cout<<'\n';
     }
 
-    sf::RectangleShape shape[N][M];
+//     sf::RectangleShape shape[N][M];
+    sf::CircleShape shape[N][M];
     for (int i = 0; i < N; ++i)
     {
         for (int j = 0; j < M; ++j)
         {
+            visited[i][j] = 0; // initialize visited array
+
             mx = max(grid[i][j], mx);
-            shape[i][j].setSize(sf::Vector2f(50.0f, 50.0f));
+//             shape[i][j].setSize(sf::Vector2f(tileSize, tileSize));
+            shape[i][j].setRadius(tileSize/2.0);
             if (grid[i][j] == -1)
             {
                 shape[i][j].setFillColor(sf::Color::Green);
@@ -88,11 +129,11 @@ int main(){
         for (int j = 0; j < M; ++j)
         {
             if(grid[i][j] == mx) {
-                shape[i][j].setFillColor(sf::Color(0, 0, 0));
+                shape[i][j].setFillColor(sf::Color::Cyan);
                 shape[i][j].setOutlineThickness(2.0f);
                 shape[i][j].setOutlineColor(sf::Color(0, 0, 0));
             }
-            shape[i][j].setPosition(sf::Vector2f(50.0f * j, 50.0f * i));
+            shape[i][j].setPosition(sf::Vector2f((j+1)*tileGap+tileSize * j,(i+1)*tileGap + tileSize * i));
         }
     }
     // shape.setFillColor(sf::Color::Green);
@@ -130,7 +171,7 @@ int main(){
                 sf::Vector2i pos = sf::Mouse::getPosition(window);
                 swap(pos.x,pos.y);
 
-                pos /= 50;
+                pos /= (tileSize+tileGap);
 
                 if(pos.x<N && pos.x >= 0 and pos.y<M and pos.y >= 0){
                     int i=YellowPath.back().x;
@@ -143,6 +184,7 @@ int main(){
                             if(YellowPath.size()>1){
                                 shape[i][j].setFillColor(sf::Color::Yellow);
                             }
+                            LinePath.emplace_back(ConnectTwoNodes(YellowPath.back(), pos));
                             YellowPath.emplace_back(pos);
                         }
                     } else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
@@ -152,6 +194,7 @@ int main(){
                                 shape[last.x][last.y].setFillColor(sf::Color::White);
                                 visited[last.x][last.y] = false;
                                 YellowPath.pop_back();
+                                LinePath.pop_back();
                                 visitedNodes--;
                             }
                             if(pos != startingCell) {
@@ -165,8 +208,12 @@ int main(){
 
 
         
-
         window.clear();
+
+        for(auto x:LinePath){
+            window.draw(x);
+        }
+
         for (int i = 0; i < N; ++i)
         {
             for (int j = 0; j < M; ++j)
@@ -175,9 +222,10 @@ int main(){
             }
         }
 
+
         window.display();
         if(visitedNodes == mx){
-            printf("Done");                                                
+            std::cout<<"Done"<<"\n";
             return 0;
         }
     }

@@ -1,4 +1,4 @@
-#include "../Classes/grid.hpp"
+#include "../include/grid.hpp"
 #include <vector>
 using namespace std;
 
@@ -7,7 +7,7 @@ Grid::Grid(int n, int m) : n(n), m(m) {
 	assignGoodGrid(1000);
 }
 
-Grid::Grid(int n = 0, int m = 0, bool dummy = false, int tries = 1000) : n(n), m(m) {
+Grid::Grid(int n , int m , bool dummy = false, int tries = 1000): n(n), m(m) {
 	grid.resize(n, vector<int>(m, -1));
 	if(!dummy) {
 		assignGoodGrid(tries);

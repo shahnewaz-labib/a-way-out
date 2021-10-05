@@ -2,8 +2,8 @@
 SRCDIR=src
 
 # Classes with Header .h and .cpp files
-CLASS_DIR=$(SRCDIR)/Classes
-CLASS_HEADERS=$(SRCDIR)/Classes
+CLASS_DIR=$(SRCDIR)/ClassDef
+CLASS_HEADERS=$(SRCDIR)/include
 
 OBDIR=obj
 IDIR=
@@ -32,7 +32,7 @@ Program: $(OBJ)
 $(OBDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) -c $< -o $@
 
-$(OBDIR)/%.o: $(CLASS_DIR)/%.cpp $(CLASS_HEADERS)/%.h
+$(OBDIR)/%.o: $(CLASS_DIR)/%.cpp $(CLASS_HEADERS)/%.hpp
 	$(CC) -c $< -o $@
 
 clean:
