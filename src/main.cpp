@@ -11,9 +11,9 @@
 #include <iostream>
 #include "include/grid.hpp"
 #define tileSize 50
-#define tileGap 20
+#define tileGap 40
 #define lineHeight tileSize+tileGap
-#define lineWidth 5
+#define lineWidth 10
 
 using namespace std;
 
@@ -47,12 +47,12 @@ sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
     double Y,X,F;
 
     if(i1 == i2){ // Horizontal
-        swap(h,w);
-        Y = i1*tileSize + (i1+1)*tileGap + tileSize/2.0;
+        Y = i1*tileSize + (i1+1)*tileGap + tileSize/2.0 - w/2.0;
         F = min(j1,j2);
         X = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
+        swap(h,w);
     } else { // Vertical
-        X = j1*tileSize + (j1+1)*tileGap + tileSize/2.0;
+        X = j1*tileSize + (j1+1)*tileGap + tileSize/2.0 - w/2.0;
         F = min(i1,i2);
         Y = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
     }
