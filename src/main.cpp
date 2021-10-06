@@ -7,6 +7,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Shape.hpp>
 #include <vector>
 #include <iostream>
 #include "include/grid.hpp"
@@ -17,7 +18,6 @@
 
 using namespace std;
 
-// vector<vector<int>> findGoodGrid(int, int);
 sf::Vector2i Right(1,0);
 sf::Vector2i Left(-1,0);
 sf::Vector2i Down(0,-1);
@@ -27,7 +27,6 @@ sf::Vector2i Dirs[4]={Right,Left,Down,Up};
 
 bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
     for(auto dir:Dirs){
-        //         cout<<(prevPos+dir).x<<" "<<(prevPos+dir).y<<"\n";
         if(curPos == prevPos+dir)
             return 1;
     }
@@ -47,14 +46,14 @@ sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
     double Y,X,F;
 
     if(i1 == i2){ // Horizontal
-        Y = i1*tileSize + (i1+1)*tileGap + tileSize/2.0 - w/2.0;
+        Y = i1*(tileSize+tileGap) + tileGap + tileSize/2.0 - lineWidth/2.0;
         F = min(j1,j2);
-        X = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
+        X = (F+1)*(tileSize+tileGap) - tileSize/2.0;
         swap(h,w);
     } else { // Vertical
-        X = j1*tileSize + (j1+1)*tileGap + tileSize/2.0 - w/2.0;
+        X = j1*(tileSize+tileGap) + tileGap + tileSize/2.0 - lineWidth/2.0;
         F = min(i1,i2);
-        Y = F*(tileSize+tileGap) + tileGap + tileSize/2.0;
+        Y = (F+1)*(tileSize+tileGap) - tileSize/2.0;
     }
     R.setSize(sf::Vector2f(w,h));
     R.setPosition(sf::Vector2f(X,Y));
@@ -91,8 +90,8 @@ int main(){
         std::cout<<'\n';
     }
 
-//     sf::RectangleShape shape[N][M];
-    sf::CircleShape shape[N][M];
+    sf::Shape *shape[N][M];
+
     for (int i = 0; i < N; ++i)
     {
         for (int j = 0; j < M; ++j)
@@ -100,26 +99,30 @@ int main(){
             visited[i][j] = 0; // initialize visited array
 
             mx = max(grid[i][j], mx);
-//             shape[i][j].setSize(sf::Vector2f(tileSize, tileSize));
-            shape[i][j].setRadius(tileSize/2.0);
             if (grid[i][j] == -1)
             {
-                shape[i][j].setFillColor(sf::Color::Green);
-                shape[i][j].setOutlineThickness(2.0f);
-                shape[i][j].setOutlineColor(sf::Color::Cyan);
+                shape[i][j] = new sf::RectangleShape();
+                shape[i][j]->setFillColor(sf::Color::Green);
+                shape[i][j]->setOutlineThickness(2.0f);
+                shape[i][j]->setOutlineColor(sf::Color::Cyan);
+                dynamic_cast<sf::RectangleShape*>(shape[i][j])->setSize(sf::Vector2f(tileSize, tileSize));
             }
             else if (grid[i][j] == 0)
             {
-                shape[i][j].setFillColor(sf::Color::Blue);
+                shape[i][j] = new sf::CircleShape();
+                shape[i][j]->setFillColor(sf::Color::Blue);
                 YellowPath.emplace_back(sf::Vector2i(i,j));
                 startingCell=sf::Vector2i(i,j);
                 visited[i][j] = 1;
+                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(tileSize/2.0);
             }
             else
             {
-                shape[i][j].setFillColor(sf::Color( (255 - 255 * grid[i][j]/255.0), (255 - 255 * grid[i][j]/255.0), ( 255 - 255 * grid[i][j]/255.0) ));
-                shape[i][j].setOutlineThickness(2.0f);
-                shape[i][j].setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
+                shape[i][j] = new sf::CircleShape();
+                shape[i][j]->setFillColor(sf::Color( (255 - 255 * grid[i][j]/255.0), (255 - 255 * grid[i][j]/255.0), ( 255 - 255 * grid[i][j]/255.0) ));
+                shape[i][j]->setOutlineThickness(2.0f);
+                shape[i][j]->setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
+                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(tileSize/2.0);
             }
         }
     }
@@ -129,11 +132,11 @@ int main(){
         for (int j = 0; j < M; ++j)
         {
             if(grid[i][j] == mx) {
-                shape[i][j].setFillColor(sf::Color::Cyan);
-                shape[i][j].setOutlineThickness(2.0f);
-                shape[i][j].setOutlineColor(sf::Color(0, 0, 0));
+                shape[i][j]->setFillColor(sf::Color::Cyan);
+                shape[i][j]->setOutlineThickness(2.0f);
+                shape[i][j]->setOutlineColor(sf::Color(0, 0, 0));
             }
-            shape[i][j].setPosition(sf::Vector2f((j+1)*tileGap+tileSize * j,(i+1)*tileGap + tileSize * i));
+            shape[i][j]->setPosition(sf::Vector2f((j+1)*tileGap+tileSize * j,(i+1)*tileGap + tileSize * i));
         }
     }
     // shape.setFillColor(sf::Color::Green);
@@ -178,11 +181,11 @@ int main(){
                     int j=YellowPath.back().y;
                     if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                         if(grid[pos.x][pos.y] !=- 1 && isNextCell(YellowPath.back(), pos) && !visited[pos.x][pos.y]){
-                            shape[pos.x][pos.y].setFillColor(sf::Color::Red);
+                            shape[pos.x][pos.y]->setFillColor(sf::Color::Red);
                             visited[pos.x][pos.y] = 1;
                             visitedNodes++;
                             if(YellowPath.size()>1){
-                                shape[i][j].setFillColor(sf::Color::Yellow);
+                                shape[i][j]->setFillColor(sf::Color::Yellow);
                             }
                             LinePath.emplace_back(ConnectTwoNodes(YellowPath.back(), pos));
                             YellowPath.emplace_back(pos);
@@ -191,14 +194,14 @@ int main(){
                         if(visited[pos.x][pos.y] && YellowPath.size()>1){
                             while(YellowPath.back() != pos) {
                                 auto last = YellowPath.back();
-                                shape[last.x][last.y].setFillColor(sf::Color::White);
+                                shape[last.x][last.y]->setFillColor(sf::Color::White);
                                 visited[last.x][last.y] = false;
                                 YellowPath.pop_back();
                                 LinePath.pop_back();
                                 visitedNodes--;
                             }
                             if(pos != startingCell) {
-                                shape[pos.x][pos.y].setFillColor(sf::Color::Red);
+                                shape[pos.x][pos.y]->setFillColor(sf::Color::Red);
                             }
                         }
                     }
@@ -218,7 +221,7 @@ int main(){
         {
             for (int j = 0; j < M; ++j)
             {
-                window.draw(shape[i][j]);
+                window.draw(*shape[i][j]);
             }
         }
 
