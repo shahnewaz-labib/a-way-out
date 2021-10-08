@@ -124,6 +124,8 @@ int main(){
                 shape[i][j]->setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
                 dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(tileSize/2.0);
             }
+
+            shape[i][j]->setOrigin(tileSize/2.0,tileSize/2.0);
         }
     }
 
@@ -136,13 +138,9 @@ int main(){
                 shape[i][j]->setOutlineThickness(2.0f);
                 shape[i][j]->setOutlineColor(sf::Color(0, 0, 0));
             }
-            shape[i][j]->setPosition(sf::Vector2f((j+1)*tileGap+tileSize * j,(i+1)*tileGap + tileSize * i));
+            shape[i][j]->setPosition(sf::Vector2f( (j+1)*(tileSize+tileGap) - tileSize/2.0,(i+1)*(tileGap+tileSize) - tileSize/2.0) );
         }
     }
-    // shape.setFillColor(sf::Color::Green);
-    // shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));
-    // shape.setPosition(sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f));
-
 
     bool isWindowFocused = true;
 
