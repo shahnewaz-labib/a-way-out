@@ -14,7 +14,8 @@ using namespace std;
 #define WIN_HEIGHT 720
 #define WIN_WIDTH 600
 
-sf::Color dayBGCol = sf::Color(sf::Color(216, 226, 233, 255));
+sf::Color dayBGCol = sf::Color(216, 226, 233, 255);
+sf::Color dayHoverColor = sf::Color(69, 72, 130, 255);
 sf::Color dayTextColor = sf::Color::Black;
 
 class Game_Drawable
@@ -31,6 +32,7 @@ public:
     virtual void setFontSize(unsigned int) {}
     virtual void setLetterSpacing(double) {}
     virtual void fitBox() {}
+    virtual void checkHover(sf::Vector2i) {}
 };
 
 class Button : public Game_Drawable
@@ -62,9 +64,8 @@ public:
 
         box.setSize(_size);
         box.setPosition(_pos);
-        //box.setOutlineThickness(3.0f);
-        //box.setOutlineColor(sf::Color::dayBGCol);
-        box.setFillColor(dayBGCol);
+        box.setOutlineThickness(0.0f);
+        box.setOutlineColor(sf::Color::Black);
         if (!ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf"))
         {
             sf::err() << "Couldn't load font\n";
@@ -107,6 +108,21 @@ public:
         centerText();
     }
 
+    void checkHover(sf::Vector2i mousePos) {
+        cout << mousePos.x << " " << mousePos.y << "\n";
+        cout << box.getPosition().x << " " << box.getPosition().y << "\n";
+        if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            box.setFillColor(dayHoverColor);
+            txt.setFillColor(sf::Color::White);
+
+        }
+        else {
+            box.setFillColor(dayBGCol);
+            txt.setFillColor(sf::Color::Black);
+            cout << "Not inside\n";
+        }
+    }
+
     void Draw()
     {
         window->draw(box);
@@ -146,8 +162,10 @@ int main()
     }
 
     sf::Event ev;
+    sf::Vector2i mousePos;
     while (window.isOpen())
     {
+        mousePos = sf::Mouse::getPosition(window);
         while (window.pollEvent(ev))
         {
             if (ev.type == sf::Event::Closed)
@@ -159,6 +177,9 @@ int main()
 
         for(auto items:menuItems)
             items->Draw();
+
+        for(auto items:menuItems)
+            items->checkHover(mousePos);
         
         window.display();
     }
