@@ -109,8 +109,6 @@ public:
     }
 
     void checkHover(sf::Vector2i mousePos) {
-        cout << mousePos.x << " " << mousePos.y << "\n";
-        cout << box.getPosition().x << " " << box.getPosition().y << "\n";
         if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             box.setFillColor(dayHoverColor);
             txt.setFillColor(sf::Color::White);
@@ -119,7 +117,6 @@ public:
         else {
             box.setFillColor(dayBGCol);
             txt.setFillColor(sf::Color::Black);
-            cout << "Not inside\n";
         }
     }
 
