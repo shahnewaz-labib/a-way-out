@@ -27,6 +27,10 @@ protected:
 public:
     Game_Drawable(sf::RenderWindow *_win) : window(_win) {}
     virtual void Draw() = 0;
+    virtual void setFont(sf::Font&) {}
+    virtual void setFontSize(unsigned int) {}
+    virtual void setLetterSpacing(double) {}
+    virtual void fitBox() {}
 };
 
 class Button : public Game_Drawable
@@ -71,7 +75,7 @@ public:
 
         centerText();
     }
-    void setFont(sf::Font _ft) { ft = _ft; }
+    void setFont(sf::Font& _ft) { ft = _ft; txt.setFont(_ft); }
     void setFontSize(unsigned int _size) { txt.setCharacterSize(_size); }
     void setFillColor(sf::Color _col) { box.setFillColor(_col); }
     void setOutlineColor(sf::Color _col) { box.setOutlineColor(_col); }
@@ -116,7 +120,10 @@ int main()
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-    vector<sf::Text> texts;
+
+
+    vector <Game_Drawable*> menuItems;
+
     sf::Font sourceCode;
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     sf::Text title("A Way Out", sourceCode, 62);
@@ -127,23 +134,16 @@ int main()
     sf::Font liberationMono;
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
 
-    Button playBtn(&window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f));
-    playBtn.setFont(liberationMono);
-    playBtn.setFontSize(40);
-    playBtn.setLetterSpacing(0.75);
-    playBtn.fitBox();
+    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f)));
+    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f)));
+    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f)));
 
-    Button levelSelectBtn(&window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f));
-    levelSelectBtn.setFont(liberationMono);
-    levelSelectBtn.setFontSize(40);
-    levelSelectBtn.setLetterSpacing(0.75);
-    levelSelectBtn.fitBox();
-
-    Button aboutBtn(&window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f));
-    aboutBtn.setFont(liberationMono);
-    aboutBtn.setFontSize(40);
-    aboutBtn.setLetterSpacing(0.75);
-    aboutBtn.fitBox();
+    for(auto item : menuItems) {
+        item->setFont(liberationMono);
+        item->setFontSize(40);
+        item->setLetterSpacing(0.75);
+        item->fitBox();
+    }
 
     sf::Event ev;
     while (window.isOpen())
@@ -156,9 +156,10 @@ int main()
 
         window.clear(dayBGCol);
         window.draw(title);
-        aboutBtn.Draw();
-        playBtn.Draw();
-        levelSelectBtn.Draw();
+
+        for(auto items:menuItems)
+            items->Draw();
+        
         window.display();
     }
 }
