@@ -58,9 +58,9 @@ public:
 
         box.setSize(_size);
         box.setPosition(_pos);
-        box.setOutlineThickness(3.0f);
-        box.setOutlineColor(sf::Color::Black);
-        box.setFillColor(sf::Color::White);
+        //box.setOutlineThickness(3.0f);
+        //box.setOutlineColor(sf::Color::dayBGCol);
+        box.setFillColor(dayBGCol);
         if (!ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf"))
         {
             sf::err() << "Couldn't load font\n";
@@ -76,6 +76,7 @@ public:
     void setFillColor(sf::Color _col) { box.setFillColor(_col); }
     void setOutlineColor(sf::Color _col) { box.setOutlineColor(_col); }
     void setTextColor(sf::Color _col) { txt.setFillColor(_col); }
+    void setLetterSpacing(double x) { txt.setLetterSpacing(x); }
     void setPosition(sf::Vector2f _pos, OriginMode _mode)
     {
         x = _pos.x;
@@ -120,13 +121,29 @@ int main()
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     sf::Text title("A Way Out", sourceCode, 62);
     title.setFillColor(dayTextColor);
-    title.setPosition(130, 150);
+    title.setPosition(150, 150);
     title.setLetterSpacing(0.75);
 
-    Button btn(&window, sf::Vector2f(280.0f, 40.0f), "It's Working!!", sf::Vector2f(130.0f, 300.0f));
-    btn.setFontSize(15);
-    // btn.fitBox();
-    btn.setPosition(sf::Vector2f(100.0f, 100.0f), Button::UpperLeft);
+    sf::Font liberationMono;
+    liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
+
+    Button playBtn(&window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f));
+    playBtn.setFont(liberationMono);
+    playBtn.setFontSize(40);
+    playBtn.setLetterSpacing(0.75);
+    playBtn.fitBox();
+
+    Button levelSelectBtn(&window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f));
+    levelSelectBtn.setFont(liberationMono);
+    levelSelectBtn.setFontSize(40);
+    levelSelectBtn.setLetterSpacing(0.75);
+    levelSelectBtn.fitBox();
+
+    Button aboutBtn(&window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f));
+    aboutBtn.setFont(liberationMono);
+    aboutBtn.setFontSize(40);
+    aboutBtn.setLetterSpacing(0.75);
+    aboutBtn.fitBox();
 
     sf::Event ev;
     while (window.isOpen())
@@ -139,7 +156,9 @@ int main()
 
         window.clear(dayBGCol);
         window.draw(title);
-        btn.Draw();
+        aboutBtn.Draw();
+        playBtn.Draw();
+        levelSelectBtn.Draw();
         window.display();
     }
 }
