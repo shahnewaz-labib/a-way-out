@@ -60,7 +60,7 @@ sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
     return R;
 }
 
-int main(){
+int not_main(){
     int visitedNodes = 0;
     vector<sf::Vector2i> YellowPath;
     vector<sf::RectangleShape> LinePath;
