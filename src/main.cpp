@@ -3,18 +3,24 @@
 #include <iostream>
 #include "include/grid.hpp"
 #include "include/node.hpp"
+#include "include/menu.hpp"
 double GameWidth = 550;
 double GameHeight = 700;
 
 using namespace std;
-
+state currentState;
 
 int main(){
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth,GameHeight), "A Way Out", sf::Style::Close);
 
+    currentState = inMenu;
+
     int N = 6;
     int M = 4;
+
+    Menu menu(&window);
+
     Grid grid(N, M, &window);
     Node::setGameGrid(&grid);
 
@@ -52,19 +58,31 @@ int main(){
                 
                 }
             }
+        }
+
+        window.clear();
+
+        if(currentState == inMenu) {
+            if(isWindowFocused) {
+                menu.action();
+            }
+            menu.draw();
+        }
+        
+        else if(currentState == inPlay) {
             if(isWindowFocused) {
                 grid.takeInput();
             }
+
+            grid.draw();
+
+            if(grid.isGameSolved()){
+                std::cout<<"Done"<<"\n";
+                return 0;
+            }
         }
-        
-        window.clear();
-        grid.draw();
 
         window.display();
-        if(grid.isGameSolved()){
-            std::cout<<"Done"<<"\n";
-            return 0;
-        }
     }
 
     return 0;

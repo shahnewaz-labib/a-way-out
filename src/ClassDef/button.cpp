@@ -80,16 +80,21 @@ void Button::fitBox()
     centerText();
 }
 
-void Button::checkHover(sf::Vector2i mousePos) {
+bool Button::checkHover(sf::Vector2i mousePos) {
     if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
         box.setFillColor(getHoverColor());
         txt.setFillColor(getInvertedTextColor());
-
+        return true;
     }
     else {
         box.setFillColor(getBGCol());
         txt.setFillColor(getTextColor());
+        return false;
     }
+}
+
+std::string Button::getText() const {
+    return txt.getString();
 }
 
 void Button::draw()
@@ -97,3 +102,4 @@ void Button::draw()
     window->draw(box);
     window->draw(txt);
 }
+

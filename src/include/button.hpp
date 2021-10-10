@@ -25,8 +25,9 @@ public:
     void setLetterSpacing(double x);
     void setPosition(sf::Vector2f _pos, OriginMode _mode);
     void fitBox();
-    void checkHover(sf::Vector2i mousePos);
+    bool checkHover(sf::Vector2i mousePos);
     void draw();
+    std::string getText() const;
 };
 
 sf::Color getBGCol();

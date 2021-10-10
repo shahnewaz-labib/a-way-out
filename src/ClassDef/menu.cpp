@@ -1,5 +1,7 @@
 #include "../include/menu.hpp"
 
+extern state currentState;
+
 Menu::Menu(sf::RenderWindow* window) : window(window) {
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
@@ -19,29 +21,29 @@ Menu::Menu(sf::RenderWindow* window) : window(window) {
     }  
 }
 
+void Menu::draw() {
+
+    window->clear(getBGCol());
+    window->draw(title);
+
+    for(auto item:menuItems)
+        item->draw();
+}
+
 void Menu::action() {
-    while (window->isOpen())
-    {
-        mousePos = sf::Mouse::getPosition(*window);
-        while (window->pollEvent(ev))
-        {
-            if (ev.type == sf::Event::Closed) {
-                window->close();
-            }
+    mousePos = sf::Mouse::getPosition(*window);
+    for(auto item:menuItems) {
+        if(dynamic_cast<Button*>(item)->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if(dynamic_cast<Button*>(item)->getText() == "Play") 
+                currentState = inPlay;
+            else if(dynamic_cast<Button*>(item)->getText() == "Level Select")
+                currentState = inLevelSelect;
+            else if(dynamic_cast<Button*>(item)->getText() == "About")
+                currentState = inAbout;
         }
-
-        window->clear(getBGCol());
-        window->draw(title);
-
-        for(auto item:menuItems)
-            item->draw();
-
-        for(auto item:menuItems)
-            dynamic_cast<Button*>(item)->checkHover(mousePos);
-        
-        window->display();
     }
 }
+
 Menu::~Menu() {
     for(auto item:menuItems)
         delete item;
