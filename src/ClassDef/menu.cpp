@@ -12,10 +12,10 @@ Menu::Menu(sf::RenderWindow* window) : window(window) {
     menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f)));
 
     for(auto item : menuItems) {
-        item->setFont(liberationMono);
-        item->setFontSize(40);
-        item->setLetterSpacing(0.75);
-        item->fitBox();
+        dynamic_cast<Button*>(item)->setFont(liberationMono);
+        dynamic_cast<Button*>(item)->setFontSize(40);
+        dynamic_cast<Button*>(item)->setLetterSpacing(0.75);
+        dynamic_cast<Button*>(item)->fitBox();
     }  
 }
 
@@ -37,7 +37,7 @@ void Menu::action() {
             item->draw();
 
         for(auto item:menuItems)
-            item->checkHover(mousePos);
+            dynamic_cast<Button*>(item)->checkHover(mousePos);
         
         window->display();
     }

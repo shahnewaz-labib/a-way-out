@@ -1,16 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Graphics/Shape.hpp>
-#include <vector>
-#include <iostream>
 #include "include/grid.hpp"
+#include "include/menu.hpp"
 #define tileSize 50
 #define tileGap 40
 #define lineHeight tileSize+tileGap
@@ -71,8 +61,10 @@ int main(){
     int N = 6;
     int M = 6;
     int mx = -1;
-    sf::RenderWindow window(sf::VideoMode(N*tileSize+(N+1)*tileGap, M*tileSize+(M+1)*tileGap), "A Way Out", sf::Style::Close);
-
+    //sf::RenderWindow window(sf::VideoMode(N*tileSize+(N+1)*tileGap, M*tileSize+(M+1)*tileGap), "A Way Out", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(600, 800), "A Way Out", sf::Style::Close);
+    Menu menu(&window);
+    menu.action();
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
