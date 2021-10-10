@@ -1,10 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <iostream>
 #include "include/grid.hpp"
-#include "include/menu.hpp"
-#define tileSize 50
-#define tileGap 40
-#define lineHeight tileSize+tileGap
-#define lineWidth 10
+double GameWidth = 550;
+double GameHeight = 700;
+Grid *GameGrid;
 
 using namespace std;
 
@@ -24,8 +24,8 @@ bool isNextCell(sf::Vector2i prevPos,sf::Vector2i curPos){
 }
 
 sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
-    int h = lineHeight;
-    int w = lineWidth;
+    int h = GameGrid->lineHeight;
+    int w = GameGrid->lineWidth;
 
     sf::RectangleShape R;
     int i1 = prevPos.x, j1 = prevPos.y;
@@ -36,19 +36,20 @@ sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
     double Y,X,F;
 
     if(i1 == i2){ // Horizontal
-        Y = i1*(tileSize+tileGap) + tileGap + tileSize/2.0 - lineWidth/2.0;
+        Y = i1*(GameGrid->tileSize+GameGrid->tileGap) + GameGrid->tileGap + GameGrid->tileSize/2.0 - GameGrid->lineWidth/2.0;
         F = min(j1,j2);
-        X = (F+1)*(tileSize+tileGap) - tileSize/2.0;
+        X = (F+1)*(GameGrid->tileSize+GameGrid->tileGap) - GameGrid->tileSize/2.0;
         swap(h,w);
     } else { // Vertical
-        X = j1*(tileSize+tileGap) + tileGap + tileSize/2.0 - lineWidth/2.0;
+        X = j1*(GameGrid->tileSize+GameGrid->tileGap) + GameGrid->tileGap + GameGrid->tileSize/2.0 - GameGrid->lineWidth/2.0;
         F = min(i1,i2);
-        Y = (F+1)*(tileSize+tileGap) - tileSize/2.0;
+        Y = (F+1)*(GameGrid->tileSize+GameGrid->tileGap) - GameGrid->tileSize/2.0;
     }
     R.setSize(sf::Vector2f(w,h));
-    R.setPosition(sf::Vector2f(X,Y));
+    R.setPosition(sf::Vector2f(X,Y)+GameGrid->OffSet);
     return R;
 }
+
 
 int main(){
     int visitedNodes = 0;
@@ -58,18 +59,22 @@ int main(){
 
 
     srand(time(NULL));
-    int N = 6;
-    int M = 6;
+    sf::RenderWindow window(sf::VideoMode(GameWidth,GameHeight), "A Way Out", sf::Style::Close);
+
+
+    int N = 10;
+    int M = 8;
     int mx = -1;
-    //sf::RenderWindow window(sf::VideoMode(N*tileSize+(N+1)*tileGap, M*tileSize+(M+1)*tileGap), "A Way Out", sf::Style::Close);
-    sf::RenderWindow window(sf::VideoMode(600, 800), "A Way Out", sf::Style::Close);
-    Menu menu(&window);
-    menu.action();
+    Grid grid(N, M);
+    grid.scaleItems(window, N, M);
+    GameGrid = &grid;
+   
+
+//     sf::RenderWindow window(sf::VideoMode(M*(GameGrid->tileSize+GameGrid->tileGap)+GameGrid->tileGap, N*(GameGrid->tileSize+GameGrid->tileGap)+GameGrid->tileGap), "A Way Out", sf::Style::Close);
+
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-    Grid grid(N, M);
 
     bool visited[N][M];
 
@@ -97,7 +102,7 @@ int main(){
                 shape[i][j]->setFillColor(sf::Color::Green);
                 shape[i][j]->setOutlineThickness(2.0f);
                 shape[i][j]->setOutlineColor(sf::Color::Cyan);
-                dynamic_cast<sf::RectangleShape*>(shape[i][j])->setSize(sf::Vector2f(tileSize, tileSize));
+                dynamic_cast<sf::RectangleShape*>(shape[i][j])->setSize(sf::Vector2f(GameGrid->tileSize, GameGrid->tileSize));
             }
             else if (grid[i][j] == 0)
             {
@@ -106,7 +111,7 @@ int main(){
                 YellowPath.emplace_back(sf::Vector2i(i,j));
                 startingCell=sf::Vector2i(i,j);
                 visited[i][j] = 1;
-                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(tileSize/2.0);
+                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(GameGrid->tileSize/2.0);
             }
             else
             {
@@ -114,10 +119,10 @@ int main(){
                 shape[i][j]->setFillColor(sf::Color( (255 - 255 * grid[i][j]/255.0), (255 - 255 * grid[i][j]/255.0), ( 255 - 255 * grid[i][j]/255.0) ));
                 shape[i][j]->setOutlineThickness(2.0f);
                 shape[i][j]->setOutlineColor(sf::Color(255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0, 255 * grid[i][j]/255.0));
-                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(tileSize/2.0);
+                dynamic_cast<sf::CircleShape*>(shape[i][j])->setRadius(GameGrid->tileSize/2.0);
             }
 
-            shape[i][j]->setOrigin(tileSize/2.0,tileSize/2.0);
+            shape[i][j]->setOrigin(GameGrid->tileSize/2.0,GameGrid->tileSize/2.0);
         }
     }
 
@@ -130,7 +135,7 @@ int main(){
                 shape[i][j]->setOutlineThickness(2.0f);
                 shape[i][j]->setOutlineColor(sf::Color(0, 0, 0));
             }
-            shape[i][j]->setPosition(sf::Vector2f( (j+1)*(tileSize+tileGap) - tileSize/2.0,(i+1)*(tileGap+tileSize) - tileSize/2.0) );
+            shape[i][j]->setPosition(sf::Vector2f( (j+1)*(GameGrid->tileSize+GameGrid->tileGap) - GameGrid->tileSize/2.0,(i+1)*(GameGrid->tileGap+GameGrid->tileSize) - GameGrid->tileSize/2.0) + GameGrid->OffSet);
         }
     }
 
@@ -164,7 +169,8 @@ int main(){
                 sf::Vector2i pos = sf::Mouse::getPosition(window);
                 swap(pos.x,pos.y);
 
-                pos /= (tileSize+tileGap);
+                pos.x /= (GameGrid->tileSize+GameGrid->tileGap);
+                pos.y /= (GameGrid->tileSize+GameGrid->tileGap);
 
                 if(pos.x<N && pos.x >= 0 and pos.y<M and pos.y >= 0){
                     int i=YellowPath.back().x;

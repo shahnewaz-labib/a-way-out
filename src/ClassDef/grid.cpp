@@ -1,4 +1,5 @@
 #include "../include/grid.hpp"
+#include <SFML/System/Vector2.hpp>
 #include <vector>
 using namespace std;
 
@@ -115,6 +116,21 @@ void Grid::assignGoodGrid(int tries = 100) {
 	cout << "Final badness " << prevBadness << "\n";
 }
 
+void Grid::scaleItems(sf::RenderWindow &window,int N,int M){
+    sf::Vector2u windowSize = window.getSize();
+
+    auto getAdjustedTileSize = [&](double W,double N) -> double{
+        return W/(N*(1.0+factor+factor/N));
+    };
+
+    tileSize = min(getAdjustedTileSize(windowSize.x,M),getAdjustedTileSize(windowSize.y,N));
+    tileGap = factor*tileSize;
+    lineHeight = tileSize+tileGap;
+    lineWidth = 8;
+
+    OffSet.x = (windowSize.x-(M*(tileSize+tileGap)+tileGap))/2.0; 
+    OffSet.y = (windowSize.y-(N*(tileSize+tileGap)+tileGap))/2.0;
+}
 
 Grid::Row::Row(Grid& g, int x) : _g(g), _x(x)
 {}
