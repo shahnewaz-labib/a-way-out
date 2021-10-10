@@ -14,9 +14,23 @@ using namespace std;
 #define WIN_HEIGHT 720
 #define WIN_WIDTH 600
 
-sf::Color dayBGCol = sf::Color(216, 226, 233, 255);
-sf::Color dayHoverColor = sf::Color(69, 72, 130, 255);
-sf::Color dayTextColor = sf::Color::Black;
+bool day = true;
+
+sf::Color getBGCol() {
+    return day ? sf::Color(216, 226, 233, 255) : sf::Color::Black;
+}
+
+sf::Color getHoverColor() {
+    return day ? sf::Color(69, 72, 130, 255) : sf::Color::White;
+}
+
+sf::Color getTextColor() {
+    return day ? sf::Color::Black : sf::Color::White;
+}
+
+sf::Color getInvertedTextColor() {
+    return day ? sf::Color::White : sf::Color::Black;
+}
 
 class Game_Drawable
 {
@@ -110,13 +124,13 @@ public:
 
     void checkHover(sf::Vector2i mousePos) {
         if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-            box.setFillColor(dayHoverColor);
-            txt.setFillColor(sf::Color::White);
+            box.setFillColor(getHoverColor());
+            txt.setFillColor(getInvertedTextColor());
 
         }
         else {
-            box.setFillColor(dayBGCol);
-            txt.setFillColor(sf::Color::Black);
+            box.setFillColor(getBGCol());
+            txt.setFillColor(getTextColor());
         }
     }
 
@@ -127,6 +141,64 @@ public:
     }
 };
 
+class Menu {
+private:
+    sf::RenderWindow* window;
+    vector <Game_Drawable*> menuItems;
+    sf::Text title;
+    sf::Font sourceCode, liberationMono;
+    sf::Event ev;
+    sf::Vector2i mousePos;
+    //static sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
+public:
+    Menu(sf::RenderWindow* window) : window(window) {
+        sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
+        liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
+        title = sf::Text("A Way Out", sourceCode, 62);
+        title.setFillColor(getTextColor());
+        title.setPosition(150, 150);
+        title.setLetterSpacing(0.75);
+        menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f)));
+        menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f)));
+        menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f)));
+
+        for(auto item : menuItems) {
+            item->setFont(liberationMono);
+            item->setFontSize(40);
+            item->setLetterSpacing(0.75);
+            item->fitBox();
+        }  
+    }
+
+    void action() {
+        while (window->isOpen())
+        {
+            mousePos = sf::Mouse::getPosition(*window);
+            while (window->pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed) {
+                    window->close();
+                }
+            }
+
+            window->clear(getBGCol());
+            window->draw(title);
+
+            for(auto item:menuItems)
+                item->Draw();
+
+            for(auto item:menuItems)
+                item->checkHover(mousePos);
+            
+            window->display();
+        }
+    }
+    ~Menu() {
+        for(auto item:menuItems)
+            delete item;
+    }
+};
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "A Way Out", sf::Style::Close);
@@ -134,50 +206,6 @@ int main()
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-
-    vector <Game_Drawable*> menuItems;
-
-    sf::Font sourceCode;
-    sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
-    sf::Text title("A Way Out", sourceCode, 62);
-    title.setFillColor(dayTextColor);
-    title.setPosition(150, 150);
-    title.setLetterSpacing(0.75);
-
-    sf::Font liberationMono;
-    liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
-
-    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f)));
-    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f)));
-    menuItems.push_back(new Button(&window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f)));
-
-    for(auto item : menuItems) {
-        item->setFont(liberationMono);
-        item->setFontSize(40);
-        item->setLetterSpacing(0.75);
-        item->fitBox();
-    }
-
-    sf::Event ev;
-    sf::Vector2i mousePos;
-    while (window.isOpen())
-    {
-        mousePos = sf::Mouse::getPosition(window);
-        while (window.pollEvent(ev))
-        {
-            if (ev.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear(dayBGCol);
-        window.draw(title);
-
-        for(auto items:menuItems)
-            items->Draw();
-
-        for(auto items:menuItems)
-            items->checkHover(mousePos);
-        
-        window.display();
-    }
+    Menu menu(&window);
+    menu.action();
 }
