@@ -1,40 +1,50 @@
 #pragma once
 
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <vector>
+class Node;
 
 class Grid {
 private:
 	std::vector <std::vector<int>> grid;
-	int n, m;
-	static int dx[], dy[];
-public:
-	Grid(int n, int m);
-	Grid(int n, int m, bool dummy, int tries);
+	std::vector <std::vector<bool>> visited;
+    std::vector <sf::Vector2i> visitedPath;
+    std::vector <sf::RectangleShape> LinePath;
+    sf::Vector2i startingCell;
+    sf::RenderWindow *window;
+
+    int n, m, visitedNodes=1;
+    int numberOfVisitableNodes;
     double tileSize,tileGap;
     double factor = 0.8;
     double lineHeight;
     double lineWidth;
+    
     sf::Vector2f OffSet=sf::Vector2f(0,0);
-    void scaleItems(sf::RenderWindow&,int,int);
+    std::vector <std::vector<Node*>>Nodes;
 
-	class Row {
-	private:
-		Grid& _g;
-		int _x;
-	public:
-		Row(Grid& g, int x);
-		int& operator[] (int y);
-	};
+public:
+
+    static int dx[], dy[];
+	Grid(int n, int m, sf::RenderWindow *window);
+    static bool isAdjacentCell(sf::Vector2i prevPos,sf::Vector2i curPos);
+    sf::RectangleShape ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos);
+    void scaleItems();
+    void adjustNodes();
+    void takeInput();
+    void draw();
+    bool isGameSolved(){ return visitedNodes==numberOfVisitableNodes; }
 
 	void show();
 	bool valid(int x, int y);
-	int& at(int x, int y);
 
-	static Grid generateGrid(int n, int m);
+	std::vector<std::vector<int>> generateGrid(int n, int m);
 	void assignGoodGrid(int tries);
 
-	Row operator[] (int x);
+    friend class Node;
+    friend class VisitableNode;
+    friend class ObstacleNode;
 };
