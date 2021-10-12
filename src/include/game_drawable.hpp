@@ -14,4 +14,5 @@ protected:
 public:
     Game_Drawable(sf::RenderWindow *_win);
     virtual void draw() = 0;
+    virtual ~Game_Drawable(){}
 };

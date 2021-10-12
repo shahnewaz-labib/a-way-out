@@ -5,12 +5,35 @@
 #include <iostream>
 using namespace std;
 
-Grid::Grid(int n, int m, sf::RenderWindow *W) : n(n), m(m), window(W) {
+
+Grid::Grid(int n, int m, sf::RenderWindow *W) : n(n), m(m), window(W){
 	grid.resize(n, vector<int>(m, -1));
     Nodes.resize(n,vector<Node*>(m));
     visited.resize(n, vector<bool>(m, 0));
 	assignGoodGrid(1000);
+    setBoundary(sf::Vector2f(0,0), sf::Vector2f(window->getSize()));
+    boundary.setFillColor(sf::Color::Transparent);
+    gridBox.setFillColor(sf::Color::Transparent);
 }
+
+
+void Grid::setBoundary(sf::Vector2f upperLeftCorner, sf::Vector2f bottomRightCorner){
+    boundary.setPosition(upperLeftCorner);
+    boundary.setSize(bottomRightCorner-upperLeftCorner);
+}
+
+void Grid::setBoxColor(sf::Color fillColor, sf::Color outlineColor, float outLineThickness){
+    gridBox.setFillColor(fillColor);
+    gridBox.setOutlineColor(outlineColor);
+    gridBox.setOutlineThickness(outLineThickness);
+}
+
+void Grid::setBoundaryColor(sf::Color fillColor, sf::Color outlineColor, float outLineThickness){
+    boundary.setFillColor(fillColor);
+    boundary.setOutlineColor(outlineColor);
+    boundary.setOutlineThickness(outLineThickness);
+}
+
 
 void Grid::show() {
 	for (int i = 0; i < n; ++i)
@@ -118,21 +141,28 @@ void Grid::assignGoodGrid(int tries = 100) {
 }
 
 void Grid::scaleItems(){
-    sf::Vector2u windowSize = window->getSize();
-
     auto getAdjustedTileSize = [&](double W,double N) -> double{
         return W/(N*(1.0+factor+factor/N));
     };
 
-    tileSize = min(getAdjustedTileSize(windowSize.x,m),getAdjustedTileSize(windowSize.y,n));
+    sf::Vector2f gridSize = boundary.getSize();
+
+    tileSize = min(getAdjustedTileSize(gridSize.x,m),getAdjustedTileSize(gridSize.y,n));
     tileGap = factor*tileSize;
     lineHeight = tileSize+tileGap;
     lineWidth = 8;
 
-    OffSet.x = (windowSize.x-(m*(tileSize+tileGap)+tileGap))/2.0; 
-    OffSet.y = (windowSize.y-(n*(tileSize+tileGap)+tileGap))/2.0;
+    OffSet.x = (gridSize.x-(m*(tileSize+tileGap)+tileGap))/2.0; 
+    OffSet.y = (gridSize.y-(n*(tileSize+tileGap)+tileGap))/2.0;
+    OffSet += boundary.getPosition();
+
+    gridBox.setPosition(OffSet);
+    gridBox.setSize(sf::Vector2f(m*tileSize+(m+1)*tileGap,n*tileSize+(n+1)*tileGap));
 }
 
+
+int Grid::dx[] = {1, 0, -1, 0};
+int Grid::dy[] = {0, 1, 0, -1};
 
 
 bool Grid::isAdjacentCell(sf::Vector2i prevPos,sf::Vector2i curPos){
@@ -143,9 +173,6 @@ bool Grid::isAdjacentCell(sf::Vector2i prevPos,sf::Vector2i curPos){
     return 0;
 }
 
-
-int Grid::dx[] = {1, 0, -1, 0};
-int Grid::dy[] = {0, 1, 0, -1};
 
 sf::RectangleShape Grid::ConnectTwoNodes(sf::Vector2i prevPos,sf::Vector2i curPos){
     int h = lineHeight;
@@ -179,6 +206,7 @@ void Grid::adjustNodes(){
     {
         for (int j = 0; j < m; ++j)
         {
+            if(Nodes[i][j]!=nullptr) delete Nodes[i][j];
             if (grid[i][j] == -1) //Obstacle
             {
                 Nodes[i][j] = new ObstacleNode(i,j);
@@ -197,7 +225,7 @@ void Grid::adjustNodes(){
             else // Normal Node
             {
                 Nodes[i][j] = new VisitableNode(i,j);
-//                 Nodes[i][j]->setOutline();
+//                 Nodes[i][j]->setOutline(sf::Color::Black,1);
             }
 
         }
@@ -207,48 +235,51 @@ void Grid::adjustNodes(){
 
 void Grid::takeInput(){
     sf::Vector2i pos = sf::Mouse::getPosition(*window);
-    pos.x /= (tileSize+tileGap+OffSet.x);
-    pos.y /= (tileSize+tileGap+OffSet.y);
+    if(!gridBox.getGlobalBounds().contains(sf::Vector2f(pos))) return;
+    pos.x = (pos.x-OffSet.x)/(tileSize+tileGap);
+    pos.y = (pos.y-OffSet.y)/(tileSize+tileGap);
     swap(pos.x,pos.y);
 
-    if(valid(pos.x, pos.y)){
-        int i = pos.x, j = pos.y; // Clicked Node
-        int pi=visitedPath.back().x,
-            pj=visitedPath.back().y; // Previous Node
+    int i = pos.x, j = pos.y; // Clicked Node
+    if(!valid(i, j)) return;
+    int pi=visitedPath.back().x,
+        pj=visitedPath.back().y; // Previous Node
 
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            if(grid[i][j] !=- 1 && isAdjacentCell(visitedPath.back(), pos) && !visited[i][j]){
-                Nodes[i][j]->setColor(sf::Color::Red);
-                visited[i][j] = 1;
-                visitedNodes++;
-                if(visitedPath.size()>1){ // not Source Node
-                    Nodes[pi][pj]->setColor(sf::Color::Yellow);
-                }
-                LinePath.emplace_back(ConnectTwoNodes(visitedPath.back(), pos));
-                visitedPath.emplace_back(pos);
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+        if(grid[i][j] !=- 1 && isAdjacentCell(visitedPath.back(), pos) && !visited[i][j]){
+            Nodes[i][j]->setColor(sf::Color::Red);
+            visited[i][j] = 1;
+            visitedNodes++;
+            if(visitedPath.size()>1){ // not Source Node
+                Nodes[pi][pj]->setColor(sf::Color::Yellow);
             }
-        } 
+            LinePath.emplace_back(ConnectTwoNodes(visitedPath.back(), pos));
+            visitedPath.emplace_back(pos);
+        }
+    } 
 
-        else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-            if(visited[i][j] && visitedPath.size()>1){
-                while(visitedPath.back() != pos) {
-                    auto last = visitedPath.back();
-                    Nodes[last.x][last.y]->setColor(sf::Color::White);
-                    visited[last.x][last.y] = false;
-                    visitedPath.pop_back();
-                    LinePath.pop_back();
-                    visitedNodes--;
-                }
-                if(pos != startingCell) {
-                    Nodes[i][j]->setColor(sf::Color::Red);
-                }
+    else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+        if(visited[i][j] && visitedPath.size()>1){
+            while(visitedPath.back() != pos) {
+                auto last = visitedPath.back();
+                Nodes[last.x][last.y]->setColor(sf::Color::White);
+                visited[last.x][last.y] = false;
+                visitedPath.pop_back();
+                LinePath.pop_back();
+                visitedNodes--;
+            }
+            if(pos != startingCell) {
+                Nodes[i][j]->setColor(sf::Color::Red);
             }
         }
-
     }
+
 }
 
 void Grid::draw(){
+    window->draw(boundary);
+    window->draw(gridBox);
+
     for(auto i:LinePath){
         window->draw(i);
     }
@@ -256,6 +287,15 @@ void Grid::draw(){
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
             window->draw(*(Nodes[i][j]->shape));
+        }
+    }
+}
+
+
+Grid::~Grid(){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            delete Nodes[i][j];
         }
     }
 }

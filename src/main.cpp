@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <vector>
 #include <iostream>
 #include "include/grid.hpp"
 #include "include/node.hpp"
 #include "include/menu.hpp"
-double GameWidth = 550;
+double GameWidth = 500;
 double GameHeight = 700;
 
 using namespace std;
@@ -14,15 +15,20 @@ int main(){
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth,GameHeight), "A Way Out", sf::Style::Close);
 
-    currentState = inMenu;
+    currentState = inPlay;
 
-    int N = 6;
-    int M = 4;
+    int N = 8;
+    int M = 5;
 
     Menu menu(&window);
 
     Grid grid(N, M, &window);
     Node::setGameGrid(&grid);
+    sf::Vector2f gridOffset(50,50);
+
+    grid.setBoundary(gridOffset, sf::Vector2f(window.getSize())-gridOffset);
+    grid.setBoxColor(sf::Color(94,83,83));
+//     grid.setBoundaryColor(sf::Color(94,83,83));
 
     grid.scaleItems();
     grid.show(); // numbers
@@ -40,11 +46,9 @@ int main(){
         while (window.pollEvent(event))
         {
             if(event.type == sf::Event::GainedFocus) {
-                // cout << "gained focus\n";
                 isWindowFocused = true;
             }
             if(event.type == sf::Event::LostFocus) {
-                // cout << "Lost focus\n";
                 isWindowFocused = false;
             }
 
@@ -53,9 +57,7 @@ int main(){
             }
             if(event.type == sf::Event::KeyPressed) {
                 if(event.key.code == sf::Keyboard::Q) {
-                    // cout << "q pressed. Quitting.\n";
                     window.close();
-                
                 }
             }
         }
