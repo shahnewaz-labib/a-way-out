@@ -1,5 +1,5 @@
 #pragma once
-
+#include "item.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -28,6 +28,7 @@ private:
     std::vector <std::vector<Node*>>Nodes;
     sf::RectangleShape boundary,gridBox;
     // gridBox is inside boundary
+    Item *reset;
 
 public:
 
@@ -52,6 +53,9 @@ public:
 	std::vector<std::vector<int>> generateGrid(int n, int m);
 	void assignGoodGrid(int tries);
     ~Grid();
+    void adjustHeaders();
+    void removePath(sf::Vector2i pos);
+    void addPath(sf::Vector2i pos);
 
     friend class Node;
     friend class VisitableNode;

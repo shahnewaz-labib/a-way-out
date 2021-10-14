@@ -24,13 +24,12 @@ int main(){
 
     Grid grid(N, M, &window);
     Node::setGameGrid(&grid);
-    sf::Vector2f gridOffset(50,50);
-
-    grid.setBoundary(gridOffset, sf::Vector2f(window.getSize())-gridOffset);
-    grid.setBoxColor(sf::Color(94,83,83));
+//     sf::Vector2f gridOffset(50,50);
+// 
+//     grid.setBoundary(gridOffset, sf::Vector2f(window.getSize())-gridOffset);
+//     grid.setBoxColor(sf::Color(94,83,83));
 //     grid.setBoundaryColor(sf::Color(94,83,83));
 
-    grid.scaleItems();
     grid.show(); // numbers
     grid.adjustNodes();
 

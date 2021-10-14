@@ -1,5 +1,8 @@
 #include "../include/grid.hpp"
 #include "../include/node.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <vector>
 #include <iostream>
@@ -14,6 +17,9 @@ Grid::Grid(int n, int m, sf::RenderWindow *W) : n(n), m(m), window(W){
     setBoundary(sf::Vector2f(0,0), sf::Vector2f(window->getSize()));
     boundary.setFillColor(sf::Color::Transparent);
     gridBox.setFillColor(sf::Color::Transparent);
+
+    adjustHeaders();
+    scaleItems();
 }
 
 
@@ -233,45 +239,62 @@ void Grid::adjustNodes(){
 
 }
 
+void Grid::removePath(sf::Vector2i pos){
+    if(visited[pos.x][pos.y] && visitedPath.size()>1){
+        while(visitedPath.back() != pos) {
+            auto last = visitedPath.back();
+            Nodes[last.x][last.y]->setColor(sf::Color::White);
+            visited[last.x][last.y] = false;
+            visitedPath.pop_back();
+            LinePath.pop_back();
+            visitedNodes--;
+        }
+        if(pos != startingCell) {
+            Nodes[pos.x][pos.y]->setColor(sf::Color::Red);
+        }
+    }
+}
+
+void Grid::addPath(sf::Vector2i pos){
+    int i=pos.x, j=pos.y;
+    int pi=visitedPath.back().x,
+       pj=visitedPath.back().y; // Previous Node
+
+    if(grid[i][j] !=- 1 && isAdjacentCell(visitedPath.back(), pos) && !visited[i][j]){
+        Nodes[i][j]->setColor(sf::Color::Red);
+        visited[i][j] = 1;
+        visitedNodes++;
+        if(visitedPath.size()>1){ // not Source Node
+            Nodes[pi][pj]->setColor(sf::Color::Yellow);
+        }
+        LinePath.emplace_back(ConnectTwoNodes(visitedPath.back(), pos));
+        visitedPath.emplace_back(pos);
+    }
+}
+
 void Grid::takeInput(){
     sf::Vector2i pos = sf::Mouse::getPosition(*window);
+    if(reset->boundary.getGlobalBounds().contains(sf::Vector2f(pos))){
+        reset->setTextureRect(1);
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            removePath(startingCell);
+        }
+    } else {
+        reset->setTextureRect();
+    }
     if(!gridBox.getGlobalBounds().contains(sf::Vector2f(pos))) return;
     pos.x = (pos.x-OffSet.x)/(tileSize+tileGap);
     pos.y = (pos.y-OffSet.y)/(tileSize+tileGap);
     swap(pos.x,pos.y);
 
-    int i = pos.x, j = pos.y; // Clicked Node
-    if(!valid(i, j)) return;
-    int pi=visitedPath.back().x,
-        pj=visitedPath.back().y; // Previous Node
+    if(!valid(pos.x, pos.y)) return;
 
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-        if(grid[i][j] !=- 1 && isAdjacentCell(visitedPath.back(), pos) && !visited[i][j]){
-            Nodes[i][j]->setColor(sf::Color::Red);
-            visited[i][j] = 1;
-            visitedNodes++;
-            if(visitedPath.size()>1){ // not Source Node
-                Nodes[pi][pj]->setColor(sf::Color::Yellow);
-            }
-            LinePath.emplace_back(ConnectTwoNodes(visitedPath.back(), pos));
-            visitedPath.emplace_back(pos);
-        }
+        addPath(pos);
     } 
 
     else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-        if(visited[i][j] && visitedPath.size()>1){
-            while(visitedPath.back() != pos) {
-                auto last = visitedPath.back();
-                Nodes[last.x][last.y]->setColor(sf::Color::White);
-                visited[last.x][last.y] = false;
-                visitedPath.pop_back();
-                LinePath.pop_back();
-                visitedNodes--;
-            }
-            if(pos != startingCell) {
-                Nodes[i][j]->setColor(sf::Color::Red);
-            }
-        }
+        removePath(pos);
     }
 
 }
@@ -279,6 +302,7 @@ void Grid::takeInput(){
 void Grid::draw(){
     window->draw(boundary);
     window->draw(gridBox);
+    reset->draw();
 
     for(auto i:LinePath){
         window->draw(i);
@@ -298,4 +322,17 @@ Grid::~Grid(){
             delete Nodes[i][j];
         }
     }
+    delete reset;
+}
+
+void Grid::adjustHeaders(){
+    float padding = 20;
+    sf::Vector2f size = sf::Vector2f(30,30);
+    int wx = window->getSize().x;
+    int wy = window->getSize().y;
+    setBoundary(sf::Vector2f(0,size.y+padding), sf::Vector2f(wx,wy));
+    sf::Vector2f pos = sf::Vector2f(wx-size.x-padding,padding);
+    sf::Texture T; 
+    T.loadFromFile("Assets/reset.png");
+    reset = new Item(window,pos,size,T);
 }
