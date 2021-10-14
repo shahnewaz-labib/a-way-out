@@ -9,7 +9,7 @@ Item::Item(RenderWindow *window,Vector2f pos,Vector2f size,Texture T){
     this->window = window;
     boundary.setSize(size);
     boundary.setPosition(pos);
-    boundary.setFillColor(Color::Transparent);
+//     boundary.setFillColor(Color::Transparent);
     sprite.setPosition(pos);
     texture = T;
     auto ts = Vector2f(T.getSize());

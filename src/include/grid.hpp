@@ -28,7 +28,7 @@ private:
     std::vector <std::vector<Node*>>Nodes;
     sf::RectangleShape boundary,gridBox;
     // gridBox is inside boundary
-    Item *reset;
+    Item *reset,*solve;
 
 public:
 
@@ -56,6 +56,7 @@ public:
     void adjustHeaders();
     void removePath(sf::Vector2i pos);
     void addPath(sf::Vector2i pos);
+    void solveGame();
 
     friend class Node;
     friend class VisitableNode;

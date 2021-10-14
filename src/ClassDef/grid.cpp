@@ -2,10 +2,15 @@
 #include "../include/node.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <time.h>
 #include <vector>
 #include <iostream>
+#ifdef __linux
+#include <unistd.h>
+#endif
 using namespace std;
 
 
@@ -272,6 +277,25 @@ void Grid::addPath(sf::Vector2i pos){
     }
 }
 
+void Grid::solveGame(){
+    removePath(startingCell);
+    int i = startingCell.x, j = startingCell.y;
+    
+    while(grid[i][j]<=numberOfVisitableNodes-3){
+        int ni,nj;
+        for(int k=0;k<4;k++){
+            ni = i+dx[k];
+            nj = j+dy[k];
+            if(valid(ni,nj) && grid[i][j]+1==grid[ni][nj]){
+                i = ni, j=nj;
+                break;
+            }
+        }
+        addPath(sf::Vector2i(i,j));
+    }
+
+}
+
 void Grid::takeInput(){
     sf::Vector2i pos = sf::Mouse::getPosition(*window);
     if(reset->boundary.getGlobalBounds().contains(sf::Vector2f(pos))){
@@ -282,6 +306,16 @@ void Grid::takeInput(){
     } else {
         reset->setTextureRect();
     }
+
+    if(solve->boundary.getGlobalBounds().contains(sf::Vector2f(pos))){
+        solve->setTextureRect(1);
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            solveGame();
+        } 
+    } else {
+        solve->setTextureRect();
+    }
+
     if(!gridBox.getGlobalBounds().contains(sf::Vector2f(pos))) return;
     pos.x = (pos.x-OffSet.x)/(tileSize+tileGap);
     pos.y = (pos.y-OffSet.y)/(tileSize+tileGap);
@@ -303,6 +337,7 @@ void Grid::draw(){
     window->draw(boundary);
     window->draw(gridBox);
     reset->draw();
+    solve->draw();
 
     for(auto i:LinePath){
         window->draw(i);
@@ -334,5 +369,10 @@ void Grid::adjustHeaders(){
     sf::Vector2f pos = sf::Vector2f(wx-size.x-padding,padding);
     sf::Texture T; 
     T.loadFromFile("Assets/reset.png");
+    
     reset = new Item(window,pos,size,T);
+
+    T.loadFromFile("Assets/solve.png");
+    pos.x -= padding + size.x;
+    solve = new Item(window,pos,size,T);
 }
