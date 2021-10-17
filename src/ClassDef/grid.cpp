@@ -8,9 +8,6 @@
 #include <time.h>
 #include <vector>
 #include <iostream>
-#ifdef __linux
-#include <unistd.h>
-#endif
 using namespace std;
 
 
@@ -298,7 +295,7 @@ void Grid::solveGame(){
 
 void Grid::takeInput(){
     sf::Vector2i pos = sf::Mouse::getPosition(*window);
-    if(reset->boundary.getGlobalBounds().contains(sf::Vector2f(pos))){
+    if(reset->contains(sf::Vector2f(pos))){
         reset->setTextureRect(1);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             removePath(startingCell);
@@ -307,7 +304,7 @@ void Grid::takeInput(){
         reset->setTextureRect();
     }
 
-    if(solve->boundary.getGlobalBounds().contains(sf::Vector2f(pos))){
+    if(solve->contains(sf::Vector2f(pos))){
         solve->setTextureRect(1);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             solveGame();
@@ -366,13 +363,10 @@ void Grid::adjustHeaders(){
     int wx = window->getSize().x;
     int wy = window->getSize().y;
     setBoundary(sf::Vector2f(0,size.y+padding), sf::Vector2f(wx,wy));
-    sf::Vector2f pos = sf::Vector2f(wx-size.x-padding,padding);
-    sf::Texture T; 
-    T.loadFromFile("Assets/reset.png");
+    sf::Vector2f pos = sf::Vector2f(wx-size.x/2.0-padding,padding+size.y/2.0);
     
-    reset = new Item(window,pos,size,T);
+    reset = new Item(window,size,"Assets/reset.png",pos);
 
-    T.loadFromFile("Assets/solve.png");
     pos.x -= padding + size.x;
-    solve = new Item(window,pos,size,T);
+    solve = new Item(window,size,"Assets/solve.png",pos);
 }
