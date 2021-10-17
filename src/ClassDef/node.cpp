@@ -1,9 +1,5 @@
 #include "../include/node.hpp"
 #include "../include/grid.hpp"
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/System/Vector2.hpp>
 
 Grid* Node::GameGrid=NULL;
 

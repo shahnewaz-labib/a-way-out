@@ -1,6 +1,6 @@
 #include "../include/button.hpp"
 
-bool day = true;
+bool day = 0;
 
 sf::Color getBGCol() {
     return day ? sf::Color(216, 226, 233, 255) : sf::Color::Black;

@@ -1,10 +1,5 @@
 #pragma once
 #include "item.hpp"
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <iostream>
 #include <vector>
 class Node;
 
@@ -14,6 +9,7 @@ private:
 	std::vector <std::vector<bool>> visited;
     std::vector <sf::Vector2i> visitedPath;
     std::vector <sf::RectangleShape> LinePath;
+    std::vector <Item*> buttons;
     sf::Vector2i startingCell;
     sf::RenderWindow *window;
 

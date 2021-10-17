@@ -18,8 +18,9 @@ void Item::adjustSprite(){
     setTextureRect();
 }
 
-Item::Item(RenderWindow *window,Vector2f size,std::string textureFile,Vector2f pos){
+Item::Item(RenderWindow *window,Vector2f size,std::string textureFile,itemType T,Vector2f pos){
     setBasics(window,pos,textureFile);
+    Type = T;
     boundary.setOrigin(size/2.0f);
     boundary.setSize(size);
     boundary.setPosition(pos);
@@ -42,8 +43,8 @@ void Item::setPosition(Vector2f pos){
     sprite.setPosition(pos - boundary.getSize()/2.0f);
 }
 
-bool Item::contains(Vector2f pos){
-    return boundary.getGlobalBounds().contains(pos);
+bool Item::contains(Vector2i pos){
+    return boundary.getGlobalBounds().contains(Vector2f(pos));
 }
 
 void Item::draw(){

@@ -1,15 +1,8 @@
 #include "../include/grid.hpp"
 #include "../include/node.hpp"
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <time.h>
-#include <vector>
+#include "../include/menu.hpp"
 #include <iostream>
 using namespace std;
-
 
 Grid::Grid(int n, int m, sf::RenderWindow *W) : n(n), m(m), window(W){
 	grid.resize(n, vector<int>(m, -1));
@@ -288,6 +281,7 @@ void Grid::solveGame(){
                 break;
             }
         }
+        window->clear();
         addPath(sf::Vector2i(i,j));
     }
 
@@ -295,22 +289,28 @@ void Grid::solveGame(){
 
 void Grid::takeInput(){
     sf::Vector2i pos = sf::Mouse::getPosition(*window);
-    if(reset->contains(sf::Vector2f(pos))){
-        reset->setTextureRect(1);
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            removePath(startingCell);
-        }
-    } else {
-        reset->setTextureRect();
-    }
 
-    if(solve->contains(sf::Vector2f(pos))){
-        solve->setTextureRect(1);
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            solveGame();
-        } 
-    } else {
-        solve->setTextureRect();
+    for(auto i:buttons){
+        if(i->contains(pos)){
+            i->setTextureRect(1);
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+                switch (i->Type) {
+                    case itemType::Reset:
+                        removePath(startingCell);
+                        break;
+                    case itemType::Solve:
+                        solveGame();
+                        break;
+                    case itemType::Back:
+                        extern state currentState;
+                        currentState = inMenu;
+                        break;
+                }
+            }
+            return;
+        } else {
+            i->setTextureRect();
+        }
     }
 
     if(!gridBox.getGlobalBounds().contains(sf::Vector2f(pos))) return;
@@ -333,8 +333,10 @@ void Grid::takeInput(){
 void Grid::draw(){
     window->draw(boundary);
     window->draw(gridBox);
-    reset->draw();
-    solve->draw();
+
+    for(auto i:buttons){
+        i->draw();
+    }
 
     for(auto i:LinePath){
         window->draw(i);
@@ -354,7 +356,9 @@ Grid::~Grid(){
             delete Nodes[i][j];
         }
     }
-    delete reset;
+    for(auto &i:buttons){
+        delete i;
+    }
 }
 
 void Grid::adjustHeaders(){
@@ -365,8 +369,10 @@ void Grid::adjustHeaders(){
     setBoundary(sf::Vector2f(0,size.y+padding), sf::Vector2f(wx,wy));
     sf::Vector2f pos = sf::Vector2f(wx-size.x/2.0-padding,padding+size.y/2.0);
     
-    reset = new Item(window,size,"Assets/reset.png",pos);
+    buttons.push_back(new Item(window,size,"Assets/reset.png",Reset,pos));
 
     pos.x -= padding + size.x;
-    solve = new Item(window,size,"Assets/solve.png",pos);
+    buttons.push_back(new Item(window,size,"Assets/solve.png",Solve,pos));
+
+    buttons.push_back(new Item(window,size,"Assets/back.png",Back,sf::Vector2f(padding+size.x/2.0,pos.y)));
 }

@@ -30,7 +30,7 @@ int main(){
 //     grid.setBoxColor(sf::Color(94,83,83));
 //     grid.setBoundaryColor(sf::Color(94,83,83));
 
-    grid.show(); // numbers
+//     grid.show(); // numbers
     grid.adjustNodes();
 
     sf::Image icon;
