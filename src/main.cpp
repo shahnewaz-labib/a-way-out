@@ -15,7 +15,7 @@ int main(){
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth,GameHeight), "A Way Out", sf::Style::Close);
 
-    currentState = inPlay;
+    currentState = inMenu;
 
     int N = 8;
     int M = 5;
@@ -62,6 +62,10 @@ int main(){
         }
 
         window.clear();
+
+        if(currentState == endProgram){
+            break;
+        }
 
         if(currentState == inMenu) {
             if(isWindowFocused) {

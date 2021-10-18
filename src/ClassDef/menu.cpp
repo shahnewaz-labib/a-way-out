@@ -1,23 +1,36 @@
 #include "../include/menu.hpp"
+#include <SFML/System/Vector2.hpp>
 
 extern state currentState;
 
 Menu::Menu(sf::RenderWindow* window) : window(window) {
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
+    int wx = window->getSize().x;
+    int wy = window->getSize().y;
+    int padding = 15;
+
     title = sf::Text("A Way Out", sourceCode, 62);
     title.setFillColor(getTextColor());
-    title.setPosition(150, 150);
     title.setLetterSpacing(0.75);
-    menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "Play", sf::Vector2f(255.0f, 470.0f)));
-    menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "Level Select", sf::Vector2f(170.0f, 525.0f)));
-    menuItems.push_back(new Button(window, sf::Vector2f(110.0f, 50.0f), "About", sf::Vector2f(240.0f, 575.0f)));
+    auto tmp = title.getLocalBounds();
+    title.setOrigin(tmp.width/2.0,tmp.height/2.0);
+    title.setPosition(wx/2.0, 150);
 
-    for(auto item : menuItems) {
-        dynamic_cast<Button*>(item)->setFont(liberationMono);
-        dynamic_cast<Button*>(item)->setFontSize(40);
-        dynamic_cast<Button*>(item)->setLetterSpacing(0.75);
-        dynamic_cast<Button*>(item)->fitBox();
+    menuButtons.push_back(new Button(Exit,window,"Exit"));
+    menuButtons.push_back(new Button(About,window, "About"));
+    menuButtons.push_back(new Button(Level_Select,window, "Select Level"));
+    menuButtons.push_back(new Button(Play,window, "Play"));
+
+    sf::Vector2f pos = sf::Vector2f(wx/2.0,wy-menuButtons[0]->getSize().y/2.0-100);
+
+    for(auto btn : menuButtons) {
+        btn->setFont(liberationMono);
+        btn->setFontSize(40);
+        btn->setLetterSpacing(.75);
+        btn->fitBox();
+        btn->setPosition(pos);
+        pos.y -= btn->getSize().y + padding;
     }  
 }
 
@@ -26,25 +39,30 @@ void Menu::draw() {
     window->clear(getBGCol());
     window->draw(title);
 
-    for(auto item:menuItems)
-        item->draw();
+    for(auto btn:menuButtons)
+        btn->draw();
 }
 
 void Menu::action() {
     mousePos = sf::Mouse::getPosition(*window);
-    for(auto item:menuItems) {
-        if(dynamic_cast<Button*>(item)->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            if(dynamic_cast<Button*>(item)->getText() == "Play") 
-                currentState = inPlay;
-            else if(dynamic_cast<Button*>(item)->getText() == "Level Select")
-                currentState = inLevelSelect;
-            else if(dynamic_cast<Button*>(item)->getText() == "About")
-                currentState = inAbout;
+    for(auto btn:menuButtons) {
+        if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            switch (btn->getButtonType()) {
+                case Play:
+                    currentState = inPlay; break;
+                case Level_Select:
+                    currentState = inLevelSelect; break;
+                case About:
+                    currentState = inAbout; break;
+                case Exit:
+                    currentState = endProgram; break;
+                    break;
+            }
         }
     }
 }
 
 Menu::~Menu() {
-    for(auto item:menuItems)
-        delete item;
+    for(auto btn:menuButtons)
+        delete btn;
 }

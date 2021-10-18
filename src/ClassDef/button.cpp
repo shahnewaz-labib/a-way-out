@@ -1,4 +1,5 @@
 #include "../include/button.hpp"
+#include <SFML/System/Vector2.hpp>
 
 bool day = 0;
 
@@ -23,19 +24,15 @@ void Button::centerText()
 {
     sf::FloatRect textRect = txt.getLocalBounds();
     txt.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    txt.setPosition(sf::Vector2f(box.getPosition().x + width / 2.0f, box.getPosition().y + height / 2.0f));
+    txt.setPosition(sf::Vector2f(x,y));
 }
 
 
-Button::Button(sf::RenderWindow *_win, sf::Vector2f _size, std::string _txt, sf::Vector2f _pos) : Game_Drawable(_win)
+Button::Button(buttonType T,sf::RenderWindow *_win, std::string _txt) : Game_Drawable(_win)
 {
-    width = _size.x;
-    height = _size.y;
-    x = _pos.x;
-    y = _pos.y;
+    Type = T;
 
-    box.setSize(_size);
-    box.setPosition(_pos);
+//     box.setSize(_size);
     box.setOutlineThickness(0.0f);
     box.setOutlineColor(sf::Color::Black);
     if (!ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf"))
@@ -54,29 +51,19 @@ void Button::setFillColor(sf::Color _col) { box.setFillColor(_col); }
 void Button::setOutlineColor(sf::Color _col) { box.setOutlineColor(_col); }
 void Button::setTextColor(sf::Color _col) { txt.setFillColor(_col); }
 void Button::setLetterSpacing(double x) { txt.setLetterSpacing(x); }
-void Button::setPosition(sf::Vector2f _pos, OriginMode _mode)
+void Button::setPosition(sf::Vector2f _pos)
 {
     x = _pos.x;
     y = _pos.y;
-    if (_mode == Center)
-    {
-        box.setOrigin(sf::Vector2f(width / 2.0f, height / 2.0f));
-    }
-    else if (_mode == UpperLeft)
-    {
-        box.setOrigin(sf::Vector2f(0.0f, 0.0f));
-    }
     box.setPosition(sf::Vector2f(x, y));
     centerText();
-
-    //resetting origin for consistancy in other functions
-    box.setOrigin(sf::Vector2f(0.0f, 0.0f));
 }
 void Button::fitBox()
 {
-    box.setSize(sf::Vector2f(txt.getLocalBounds().width + 5.0f, txt.getLocalBounds().height + 5.0f));
+    box.setSize(sf::Vector2f(txt.getLocalBounds().width + 15.0f, txt.getLocalBounds().height + 15.0f));
     width = box.getSize().x;
     height = box.getSize().y;
+    box.setOrigin(sf::Vector2f(width / 2.0f, height / 2.0f));
     centerText();
 }
 
@@ -95,6 +82,14 @@ bool Button::checkHover(sf::Vector2i mousePos) {
 
 std::string Button::getText() const {
     return txt.getString();
+}
+
+buttonType Button::getButtonType() {
+    return Type;
+}
+
+sf::Vector2f Button::getSize(){
+    return box.getSize();
 }
 
 void Button::draw()

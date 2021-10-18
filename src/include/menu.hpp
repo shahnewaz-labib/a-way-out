@@ -1,12 +1,12 @@
 #pragma once
 #include "button.hpp"
 
-enum state {inMenu, inPlay, inAbout, inLevelSelect};
+enum state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
 
 class Menu {
 private:
     sf::RenderWindow* window;
-    std::vector <Game_Drawable*> menuItems;
+    std::vector <Button*> menuButtons;
     sf::Text title;
     sf::Font sourceCode, liberationMono;
     sf::Event ev;
