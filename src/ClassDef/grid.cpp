@@ -99,13 +99,32 @@ vector<vector<int>> Grid::generateGrid(int n, int m) {
 	return newGrid;
 }
 
+void Grid::dfs(std::vector<std::vector<bool>>& vis, std::vector<std::vector<int>>& tempGrid, int x, int y) {
+    vis[x][y] = 1;
+    for(int k=0; k < 4; ++k) {
+        if(valid(x + dx[k], y + dy[k]) and tempGrid[x + dx[k]][y + dy[k]] == -1 and !vis[x + dx[k]][y + dy[k]])
+            dfs(vis, tempGrid, x + dx[k], y + dy[k]);
+    }
+}
+
 void Grid::assignGoodGrid(int tries = 100) {
-	int prevBadness = 1e9 + 7, badness, threshold = n+m;
+	double prevBadness = 1e9 + 7, badness, threshold = m + n + (m*n)/(m+n), groups;
 
 	for (int T = 0; T < tries; ++T)
 	{
-		badness = 0;
+		badness = 0, groups = 0;
 		auto tempGrid = generateGrid(n, m);
+        std::vector<vector<bool>> vis(n, vector<bool>(m, 0));
+
+        for(int i=0; i < n; ++i) {
+            for(int j=0; j < m; ++j) {
+                if(tempGrid[i][j] == -1 and !vis[i][j]) {
+                    ++groups;
+                    dfs(vis, tempGrid, i, j);
+                }
+            }
+        }
+
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
@@ -123,10 +142,13 @@ void Grid::assignGoodGrid(int tries = 100) {
 			}
 		}
 
-		if (badness < prevBadness and badness > threshold)
+        if(groups == 0)
+            continue;
+
+		if (badness/groups < prevBadness and badness > threshold)
 		{
 			grid = tempGrid;
-			prevBadness = badness;
+			prevBadness = badness/groups;
 		}
 	}
 

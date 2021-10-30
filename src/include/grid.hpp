@@ -47,6 +47,7 @@ public:
 	bool valid(int x, int y);
 
 	std::vector<std::vector<int>> generateGrid(int n, int m);
+    void dfs(std::vector<std::vector<bool>> &vis, std::vector<std::vector<int>> &tempGrid, int x, int y);
 	void assignGoodGrid(int tries);
     ~Grid();
     void adjustHeaders();
