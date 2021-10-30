@@ -20,7 +20,8 @@ int main(){
     int N = 8;
     int M = 5;
 
-    Menu menu(&window);
+    MainMenu menu(&window,"A Way Out",150,sf::Vector2f(GameWidth/2.0,GameHeight-150),15);
+    Level_Select_Menu level(&window,"Select Type",150,sf::Vector2f(GameWidth/2.0,GameHeight-150),15);
 
     Grid grid(N, M, &window);
     Node::setGameGrid(&grid);
@@ -72,6 +73,13 @@ int main(){
                 menu.action();
             }
             menu.draw();
+        }
+
+        else if(currentState == inLevelSelect){
+            if(isWindowFocused){
+                level.action();
+            }
+            level.draw();
         }
         
         else if(currentState == inPlay) {

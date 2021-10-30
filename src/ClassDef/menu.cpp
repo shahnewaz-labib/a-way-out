@@ -1,30 +1,55 @@
 #include "../include/menu.hpp"
+#include <SFML/System/Sleep.hpp>
+#include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Window/Window.hpp>
 
 extern state currentState;
 
-Menu::Menu(sf::RenderWindow* window) : window(window) {
+MainMenu::MainMenu(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+    set(window, titleString, titlePos_y, buttonPos, padding);
+}
+
+Level_Select_Menu::Level_Select_Menu(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+    set(window, titleString, titlePos_y, buttonPos, padding);
+}
+
+
+void Menu::set(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+    this->window = window;
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
-    int wx = window->getSize().x;
-    int wy = window->getSize().y;
-    int padding = 15;
+    adjustTittle(sf::Vector2f(window->getSize().x/2.0,titlePos_y),titleString);
+    addButtons();
+    adjustButtons(buttonPos - sf::Vector2f(0,Buttons[0]->getSize().y/2.0), padding);
+}
 
-    title = sf::Text("A Way Out", sourceCode, 62);
+void MainMenu::addButtons(){
+    Buttons.push_back(new Button(Exit,window,"Exit"));
+    Buttons.push_back(new Button(About,window, "About"));
+    Buttons.push_back(new Button(Level_Select,window, "Select Level"));
+    Buttons.push_back(new Button(Play,window, "Play"));
+}
+
+void Level_Select_Menu::addButtons(){
+    Buttons.push_back(new Button(BackToMenu,window,"Menu"));
+    Buttons.push_back(new Button(Random,window,"Dimension"));
+    Buttons.push_back(new Button(Random,window,"Level"));
+    Buttons.push_back(new Button(Random,window,"Random"));
+}
+
+void Menu::adjustTittle(sf::Vector2f pos,std::string titleString){
+    title = sf::Text(titleString, sourceCode, 62);
     title.setFillColor(getTextColor());
     title.setLetterSpacing(0.75);
     auto tmp = title.getLocalBounds();
     title.setOrigin(tmp.width/2.0,tmp.height/2.0);
-    title.setPosition(wx/2.0, 150);
+    title.setPosition(pos);
+}
 
-    menuButtons.push_back(new Button(Exit,window,"Exit"));
-    menuButtons.push_back(new Button(About,window, "About"));
-    menuButtons.push_back(new Button(Level_Select,window, "Select Level"));
-    menuButtons.push_back(new Button(Play,window, "Play"));
-
-    sf::Vector2f pos = sf::Vector2f(wx/2.0,wy-menuButtons[0]->getSize().y/2.0-100);
-
-    for(auto btn : menuButtons) {
+void Menu::adjustButtons(sf::Vector2f pos,int padding){
+    for(auto btn : Buttons) {
         btn->setFont(liberationMono);
         btn->setFontSize(40);
         btn->setLetterSpacing(.75);
@@ -39,13 +64,13 @@ void Menu::draw() {
     window->clear(getBGCol());
     window->draw(title);
 
-    for(auto btn:menuButtons)
+    for(auto btn:Buttons)
         btn->draw();
 }
 
-void Menu::action() {
+void MainMenu::action() {
     mousePos = sf::Mouse::getPosition(*window);
-    for(auto btn:menuButtons) {
+    for(auto btn:Buttons) {
         if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             switch (btn->getButtonType()) {
                 case Play:
@@ -57,12 +82,30 @@ void Menu::action() {
                 case Exit:
                     currentState = endProgram; break;
                     break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+void Level_Select_Menu::action(){
+    mousePos = sf::Mouse::getPosition(*window);
+    for(auto btn:Buttons) {
+        if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            for(int i=0;i<100000000;i++);
+            switch (btn->getButtonType()) {
+                case BackToMenu:
+                    currentState = inMenu;
+                    break;
+                 default:
+                    break;
             }
         }
     }
 }
 
 Menu::~Menu() {
-    for(auto btn:menuButtons)
+    for(auto btn:Buttons)
         delete btn;
 }
