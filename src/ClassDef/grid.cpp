@@ -108,7 +108,7 @@ void Grid::dfs(std::vector<std::vector<bool>>& vis, std::vector<std::vector<int>
 }
 
 void Grid::assignGoodGrid(int tries = 100) {
-	double prevBadness = 1e9 + 7, badness, threshold = m + n + (m*n)/(m+n), groups;
+	double prevBadness = 1e9 + 7, badness, threshold = m + n + (m*n)/(double)(m+n), groups;
 
 	for (int T = 0; T < tries; ++T)
 	{
@@ -303,7 +303,7 @@ void Grid::solveGame(){
                 break;
             }
         }
-        window->clear();
+
         addPath(sf::Vector2i(i,j));
     }
 

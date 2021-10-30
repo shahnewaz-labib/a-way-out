@@ -1,5 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <vector>
 #include <iostream>
 #include "include/grid.hpp"
@@ -14,7 +12,6 @@ state currentState;
 int main(){
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth,GameHeight), "A Way Out", sf::Style::Close);
-
     currentState = inMenu;
 
     int N = 8;

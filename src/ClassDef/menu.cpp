@@ -1,9 +1,4 @@
 #include "../include/menu.hpp"
-#include <SFML/System/Sleep.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Window/Window.hpp>
 
 extern state currentState;
 
@@ -93,9 +88,9 @@ void Level_Select_Menu::action(){
     mousePos = sf::Mouse::getPosition(*window);
     for(auto btn:Buttons) {
         if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            for(int i=0;i<100000000;i++);
             switch (btn->getButtonType()) {
                 case BackToMenu:
+                    while(sf::Mouse::isButtonPressed(sf::Mouse::Left));
                     currentState = inMenu;
                     break;
                  default:
