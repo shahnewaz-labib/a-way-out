@@ -98,3 +98,6 @@ void Button::draw()
     window->draw(txt);
 }
 
+sf::Vector2f Button::getPosition() {
+    return  box.getPosition();
+}

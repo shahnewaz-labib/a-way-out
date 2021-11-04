@@ -29,8 +29,8 @@ private:
 public:
 
     static int dx[], dy[];
-	Grid(int n, int m, sf::RenderWindow *window);
-	Grid(int n, int m, sf::RenderWindow *window,sf::Vector2f upperLeftCorner,sf::Vector2f bottomRightCorner);
+	Grid(int N, int M, sf::RenderWindow *window);
+// 	Grid(int N, int M, sf::RenderWindow *window,sf::Vector2f upperLeftCorner,sf::Vector2f bottomRightCorner);
     void setBoundary(sf::Vector2f upperLeftCorner,sf::Vector2f bottomRightCorner);
     // changing boundary would require to run scaleItems() and adjustNodes()
     void setBoxColor(sf::Color fillColor,sf::Color outlineColor=sf::Color::Transparent,float outLineThickness=0);
@@ -54,6 +54,8 @@ public:
     void removePath(sf::Vector2i pos);
     void addPath(sf::Vector2i pos);
     void solveGame();
+
+    void regenGrid(int n,int m,int tries=1000);
 
     friend class Node;
     friend class VisitableNode;
