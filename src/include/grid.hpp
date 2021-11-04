@@ -27,6 +27,18 @@ private:
     Item *reset,*solve;
 
 public:
+    class row
+    {
+        Grid &_a;
+        int _i;
+        public:
+        row(Grid &a,int i) : _a(a),_i(i){}
+        int operator[](int j) {return _a.grid[_i][j];}
+    };
+    row operator[](int i)
+    {  
+        return row(*this,i);
+    }
 
     static int dx[], dy[];
 	Grid(int N, int M, sf::RenderWindow *window);

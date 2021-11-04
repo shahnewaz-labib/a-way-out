@@ -27,7 +27,6 @@ int main()
 
     Grid grid(N, M, &window);
     level.GameGrid = &grid;
-
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
