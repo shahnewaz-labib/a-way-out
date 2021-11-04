@@ -24,7 +24,7 @@ private:
   std::ostringstream text;
   bool isSelected = false;
   int limit;
-  std::string max,min;
+  int max,min;
 
   void typeText(int ch);
   void backspace();
@@ -35,7 +35,7 @@ public:
   sf::Vector2f getSize();
   inputType getType();
 
-  TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, std::string min,std::string max,bool sel);
+  TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel);
 
   void adjustTextBox();
   void setPosition(sf::Vector2f pos);
@@ -43,5 +43,5 @@ public:
   std::string getText();
   void setText(std::string txt);
   void drawTo(sf::RenderWindow &window);
-  void typedOn(sf::Event &input);
+  void typedOn(int ch);
 };

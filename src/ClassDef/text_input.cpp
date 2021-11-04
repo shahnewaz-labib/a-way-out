@@ -1,4 +1,5 @@
 #include "../include/text_input.hpp"
+#include <string>
 
 
 void TextBox:: typeText(int ch)
@@ -28,7 +29,7 @@ inputType TextBox::getType(){
     return Type;
 }
 
-TextBox::TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, std::string min,std::string max,bool sel):max(max),min(min),pos(pos),limit(lim),Type(Type)
+TextBox::TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel):max(max),min(min),pos(pos),limit(lim),Type(Type)
 {
     int padding = 10;
     textbox.setFont(font);
@@ -54,6 +55,18 @@ TextBox::TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::
 }
 
 void TextBox:: adjustTextBox(){
+    std::string t=getText(),s="";
+    for(auto &i:t){
+        if(i!='_') s+=i;
+    }
+    
+    int v;
+    if(s.empty()) v=min;
+    else v=std::stoi(s);
+
+    if(v>max) setText(std::to_string(max));
+    else if(v<min) setText(std::to_string(min));
+
     auto tmp = textbox.getLocalBounds();
     textbox.setOrigin(tmp.left+tmp.width/2.0,tmp.top+tmp.height/2.0);
     textbox.setPosition(boundary.getPosition()+sf::Vector2f(boundary.getSize())/2.0f);
@@ -96,29 +109,29 @@ void TextBox:: drawTo(sf::RenderWindow &window)
     window.draw(textbox);
 }
 
-void TextBox:: typedOn(sf::Event &input)
+void TextBox:: typedOn(int ch)
 {
     if (isSelected)
     {
-        int ch = input.text.unicode;
-
         if (ch >='0' && ch<='9')
         {
-            if (text.str().length() < (size_t)limit)
+            if (text.str().length() < limit)
             {
                 typeText(ch);
             }
-            else {
-                setText(max);
-            }
+//             else {
+//                 setText(max);
+//             }
         }
         else if (ch == DELETE_KEY)
         {
             if(text.str().length()>0)
                 backspace();
-            else
-                setText(min);
+//             else
+//                 setText(min);
         }
+
+        adjustTextBox();
 
     }
 }

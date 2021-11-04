@@ -41,7 +41,7 @@ public:
     void addButtons();
     void action();
     void adjustTextBox();
-    void getTextInput(sf::Event &event);
+    void getTextInput(int ch);
     void draw();
     void turnOffExcept(int index);
 };;

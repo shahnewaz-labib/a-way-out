@@ -71,9 +71,9 @@ int main()
                     window.close();
                 }
             }
-            if (currentState==inLevelSelect)
+            if (currentState==inLevelSelect && sf::Event::TextEntered)
             {
-                level.getTextInput(event);
+                level.getTextInput(event.text.unicode);
             }
         }
 
@@ -99,7 +99,6 @@ int main()
             {
                 level.action();
             }
-            level.getTextInput(event);
             level.draw();
         }
 

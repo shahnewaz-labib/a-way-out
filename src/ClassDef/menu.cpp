@@ -111,6 +111,7 @@ void Level_Select_Menu::action(){
         if(tb[i]->contains(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             tb[i]->selected(1);
             turnOffExcept(i);
+            return;
         }
     }
 }
@@ -126,7 +127,7 @@ void Level_Select_Menu::adjustTextBox(){
 
     sf::Vector2f btnPos = Buttons[2]->getPosition();
     sf::Vector2f pos = btnPos + sf::Vector2f(Buttons[2]->getSize().x/2.0 + padding,-Buttons[2]->getSize().y/2.0);
-    tb.push_back( new TextBox(Level,ft, pos, chrSize, sf::Color::White, 4,"1","100", 0) );
+    tb.push_back( new TextBox(Level,ft, pos, chrSize, sf::Color::White, 4,1,100, 0) );
     
     float diff = Buttons[2]->getSize().y-tb[0]->getSize().y;
     if(diff<0) diff = 0;
@@ -138,11 +139,11 @@ void Level_Select_Menu::adjustTextBox(){
     btnPos = Buttons[1]->getPosition();
     pos = btnPos + sf::Vector2f(Buttons[1]->getSize().x/2.0 + padding,-Buttons[2]->getSize().y/2.0+diff/2.0);
 
-    tb.push_back( new TextBox(Dim1,ft,pos,chrSize,sf::Color::White,3,"5","12",0) );
+    tb.push_back( new TextBox(Dim1,ft,pos,chrSize,sf::Color::White,3,5,12,0) );
     tb[1]->setText("6");
 
     pos += sf::Vector2f(tb[1]->getSize().x+padding,0);
-    tb.push_back( new TextBox(Dim2,ft,pos,chrSize,sf::Color::White,3,"5","12",0) ) ;
+    tb.push_back( new TextBox(Dim2,ft,pos,chrSize,sf::Color::White,3,5,12,0) ) ;
     tb[2]->setText("8");
 }
 
@@ -161,10 +162,10 @@ void Level_Select_Menu::turnOffExcept(int index){
     }
 }
 
-void Level_Select_Menu::getTextInput(sf::Event &event){
+void Level_Select_Menu::getTextInput(int ch){
     for(int i=0;i<tb.size();i++){
         if(tb[i]->isOn()){
-            tb[i]->typedOn(event);
+            tb[i]->typedOn(ch);
         }
     }
 }
