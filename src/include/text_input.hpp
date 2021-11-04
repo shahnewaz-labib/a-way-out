@@ -12,12 +12,10 @@
 #define ENTER_KEY 13
 #define ESCAPE_KEY 27
 
-enum inputType { Level, Dim1, Dim2 };
 
 class TextBox
 {
 private:
-  inputType Type;
   sf::Vector2f pos;
   sf::RectangleShape boundary;
   sf::Text textbox;
@@ -33,11 +31,11 @@ public:
   bool isOn();
   bool contains(sf::Vector2i pos);
   sf::Vector2f getSize();
-  inputType getType();
 
-  TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel);
+  TextBox(sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel);
 
   void adjustTextBox();
+  int getValue();
   void setPosition(sf::Vector2f pos);
   void selected(bool sel);
   std::string getText();

@@ -4,17 +4,26 @@
 #include <iostream>
 using namespace std;
 
-Grid::Grid(int n, int m, sf::RenderWindow *W) : n(n), m(m), window(W){
-	grid.resize(n, vector<int>(m, -1));
-    Nodes.resize(n,vector<Node*>(m));
-    visited.resize(n, vector<bool>(m, 0));
-	assignGoodGrid(1000);
+Grid::Grid(int n, int m, sf::RenderWindow *W) : window(W){
+    Node::setGameGrid(this);
     setBoundary(sf::Vector2f(0,0), sf::Vector2f(window->getSize()));
     boundary.setFillColor(sf::Color::Transparent);
     gridBox.setFillColor(sf::Color::Transparent);
+    regenGrid(n, m);
 
     adjustHeaders();
+}
+
+void Grid::regenGrid(int N, int M,int tries){
+    n = N, m = M;
+	grid.assign(n, vector<int>(m, -1));
+    Nodes.assign(n,vector<Node*>(m));
+    visited.assign(n, vector<bool>(m, 0));
+    visitedPath.clear();
+    LinePath.clear();
+    assignGoodGrid(tries);
     scaleItems();
+    adjustNodes();
 }
 
 
@@ -160,7 +169,7 @@ void Grid::assignGoodGrid(int tries = 100) {
         }
     }
 
-	cout << "Final badness " << prevBadness << "\n";
+// 	cout << "Final badness " << prevBadness << "\n";
 }
 
 void Grid::scaleItems(){

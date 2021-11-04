@@ -3,9 +3,11 @@
 #include "include/grid.hpp"
 #include "include/node.hpp"
 #include "include/menu.hpp"
+#include "include/level_menu.hpp"
 #include "include/text_input.hpp"
 double GameWidth = 500;
 double GameHeight = 700;
+bool playButtonClicked=0;
 
 using namespace std;
 state currentState;
@@ -15,9 +17,7 @@ int main()
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth, GameHeight), "A Way Out", sf::Style::Close);
     
-    window.setKeyRepeatEnabled(0);
-
-    currentState = inLevelSelect;
+    currentState = inMenu;
 
     int N = 8;
     int M = 5;
@@ -26,28 +26,22 @@ int main()
     Level_Select_Menu level(&window, "Select Type", 150, sf::Vector2f(GameWidth / 2.0 - 70, GameHeight - 150), 15);
 
     Grid grid(N, M, &window);
-    Node::setGameGrid(&grid);
-    //     sf::Vector2f gridOffset(50,50);
-    //
-    //     grid.setBoundary(gridOffset, sf::Vector2f(window.getSize())-gridOffset);
-    //     grid.setBoxColor(sf::Color(94,83,83));
-    //     grid.setBoundaryColor(sf::Color(94,83,83));
-
-    //     grid.show(); // numbers
-    grid.adjustNodes();
+    level.GameGrid = &grid;
 
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-    ////////////
-//     sf::Font ft;
-//     ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
-//     Textbox tb(ft, Vector2f(100.0f, 30.0f), 22, sf::Color::White, 7, 1);
-    /////////////
+
     bool isWindowFocused = true;
 
     while (window.isOpen())
     {
+        if(playButtonClicked){
+            level.updateDimension(N, M);
+            grid.regenGrid(N, M);
+            playButtonClicked = 0;
+        }
+
         sf::Event event;
         while (window.pollEvent(event))
         {

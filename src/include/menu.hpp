@@ -1,7 +1,11 @@
 #pragma once
 #include "button.hpp"
 #include "../include/text_input.hpp"
+#include "../include/grid.hpp"
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
+#include <string>
 
 enum state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
 
@@ -13,6 +17,7 @@ protected:
     sf::Font sourceCode, liberationMono;
     sf::Event ev;
     sf::Vector2i mousePos;
+    int padding;
     //static sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
 public:
 //     Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
@@ -22,6 +27,7 @@ public:
     virtual void action() = 0;
     void adjustButtons(sf::Vector2f pos,int padding);
     void adjustTittle(sf::Vector2f pos,std::string titleString);
+    void centerText(sf::Text &txt,sf::Vector2f pos);
     virtual ~Menu();
 };
 
@@ -31,17 +37,3 @@ public:
     void addButtons();
     void action();
 };
-
-class Level_Select_Menu : public Menu {
-public:
-    std::vector<TextBox*>tb;
-    buttonType currentSelected = BackToMenu;
-    sf::Font ft;
-    Level_Select_Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
-    void addButtons();
-    void action();
-    void adjustTextBox();
-    void getTextInput(int ch);
-    void draw();
-    void turnOffExcept(int index);
-};;

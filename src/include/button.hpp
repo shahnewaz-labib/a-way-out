@@ -2,7 +2,7 @@
 #include "game_drawable.hpp"
 #include <SFML/System/Vector2.hpp>
 
-enum buttonType { Play,Level_Select,About,Exit,Random,LevelBtn,Dimension,BackToMenu };
+enum buttonType { Play,Level_Select,About,Exit,Random,Level,Dimension,BackToMenu };
 
 class Button : public Game_Drawable
 {

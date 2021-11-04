@@ -25,11 +25,7 @@ sf::Vector2f TextBox::getSize(){
     return boundary.getSize();
 }
 
-inputType TextBox::getType(){
-    return Type;
-}
-
-TextBox::TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel):max(max),min(min),pos(pos),limit(lim),Type(Type)
+TextBox::TextBox(sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, int min,int max,bool sel):max(max),min(min),pos(pos),limit(lim)
 {
     int padding = 10;
     textbox.setFont(font);
@@ -54,7 +50,7 @@ TextBox::TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::
     boundary.setFillColor(sf::Color::Blue);
 }
 
-void TextBox:: adjustTextBox(){
+int TextBox::getValue(){
     std::string t=getText(),s="";
     for(auto &i:t){
         if(i!='_') s+=i;
@@ -64,9 +60,12 @@ void TextBox:: adjustTextBox(){
     if(s.empty()) v=min;
     else v=std::stoi(s);
 
-    if(v>max) setText(std::to_string(max));
-    else if(v<min) setText(std::to_string(min));
+    if(v>max) setText(std::to_string(max)),v=max;
+    else if(v<min) setText(std::to_string(min)),v=min;
+    return v;
+}
 
+void TextBox:: adjustTextBox(){
     auto tmp = textbox.getLocalBounds();
     textbox.setOrigin(tmp.left+tmp.width/2.0,tmp.top+tmp.height/2.0);
     textbox.setPosition(boundary.getPosition()+sf::Vector2f(boundary.getSize())/2.0f);
