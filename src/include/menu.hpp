@@ -1,5 +1,7 @@
 #pragma once
 #include "button.hpp"
+#include "../include/text_input.hpp"
+#include <SFML/Window/Event.hpp>
 
 enum state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
 
@@ -32,7 +34,14 @@ public:
 
 class Level_Select_Menu : public Menu {
 public:
+    std::vector<TextBox*>tb;
+    buttonType currentSelected = BackToMenu;
+    sf::Font ft;
     Level_Select_Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     void addButtons();
     void action();
+    void adjustTextBox();
+    void getTextInput(sf::Event &event);
+    void draw();
+    void turnOffExcept(int index);
 };;

@@ -1,4 +1,8 @@
 #pragma once
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Event.hpp>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <sstream>
@@ -8,110 +12,36 @@
 #define ENTER_KEY 13
 #define ESCAPE_KEY 27
 
-class Textbox
+enum inputType { Level, Dim1, Dim2 };
+
+class TextBox
 {
 private:
-  sf::RectangleShape bg;
+  inputType Type;
+  sf::Vector2f pos;
+  sf::RectangleShape boundary;
   sf::Text textbox;
   std::ostringstream text;
   bool isSelected = false;
   int limit;
+  std::string max,min;
 
-  void typeText(int ch)
-  {
-    if (ch == DELETE_KEY)
-    {
-      if (text.str().length() > 0)
-      {
-        backspace();
-      }
-    }
-    //else if (ch == ENTER_KEY)
-    //{
-    //	//selected(false);
-    //}
-    //else if (ch == ESCAPE_KEY)
-    //{
-    //}
-    else if (ch < 123)
-    {
-      text << (char)ch;
-    }
-    textbox.setString(text.str() + '_');
-  }
-
-  void backspace()
-  {
-    std::string temp = text.str();
-    temp.pop_back();
-    text.str("");
-    text << temp;
-    textbox.setString(text.str() + '_');
-  }
+  void typeText(int ch);
+  void backspace();
 
 public:
-  Textbox(sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, bool sel)
-  {
-    textbox.setFont(font);
-    textbox.setPosition(pos);
-    textbox.setCharacterSize(size);
-    textbox.setFillColor(color);
-    isSelected = sel;
-    limit = lim;
-    if (sel)
-    {
-      textbox.setString("_");
-    }
-    else
-    {
-      textbox.setString("");
-    }
-  }
-  void selected(bool sel)
-  {
-    isSelected = sel;
-    if (sel)
-    {
-      textbox.setString(text.str() + '_');
-    }
-    else
-    {
-      textbox.setString(text.str());
-    }
-  }
+  bool isOn();
+  bool contains(sf::Vector2i pos);
+  sf::Vector2f getSize();
+  inputType getType();
 
-  std::string getText()
-  {
-    return text.str();
-  }
+  TextBox(inputType Type,sf::Font &font, sf::Vector2f pos, int size, sf::Color color, int lim, std::string min,std::string max,bool sel);
 
-  void setText(std::string txt)
-  {
-    text.str(txt);
-    textbox.setString(text.str());
-  }
-
-  void drawTo(sf::RenderWindow &window)
-  {
-    window.draw(textbox);
-  }
-
-  void typedOn(sf::Event input)
-  {
-    if (isSelected)
-    {
-      int ch = input.text.unicode;
-      if (ch < 123)
-      {
-        if (text.str().length() < (size_t)limit)
-        {
-          typeText(ch);
-        }
-        else if (text.str().length() >= 4 && ch == DELETE_KEY)
-        {
-          backspace();
-        }
-      }
-    }
-  }
+  void adjustTextBox();
+  void setPosition(sf::Vector2f pos);
+  void selected(bool sel);
+  std::string getText();
+  void setText(std::string txt);
+  void drawTo(sf::RenderWindow &window);
+  void typedOn(sf::Event &input);
 };

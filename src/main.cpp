@@ -14,13 +14,16 @@ int main()
 {
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(GameWidth, GameHeight), "A Way Out", sf::Style::Close);
-    currentState = inMenu;
+    
+    window.setKeyRepeatEnabled(0);
+
+    currentState = inLevelSelect;
 
     int N = 8;
     int M = 5;
 
     MainMenu menu(&window, "A Way Out", 150, sf::Vector2f(GameWidth / 2.0, GameHeight - 150), 15);
-    Level_Select_Menu level(&window, "Select Type", 150, sf::Vector2f(GameWidth / 2.0, GameHeight - 150), 15);
+    Level_Select_Menu level(&window, "Select Type", 150, sf::Vector2f(GameWidth / 2.0 - 70, GameHeight - 150), 15);
 
     Grid grid(N, M, &window);
     Node::setGameGrid(&grid);
@@ -37,9 +40,9 @@ int main()
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     ////////////
-    sf::Font ft;
-    ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
-    Textbox tb(ft, Vector2f(0.0f, 30.0f), 22, sf::Color::White, 7, 1);
+//     sf::Font ft;
+//     ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
+//     Textbox tb(ft, Vector2f(100.0f, 30.0f), 22, sf::Color::White, 7, 1);
     /////////////
     bool isWindowFocused = true;
 
@@ -68,15 +71,9 @@ int main()
                     window.close();
                 }
             }
-            if (event.type == sf::Event::TextEntered)
+            if (currentState==inLevelSelect)
             {
-                //////////
-                bool fieldSelected = true;
-                if (fieldSelected)
-                {
-                    tb.typedOn(event);
-                }
-                /////////
+                level.getTextInput(event);
             }
         }
 
@@ -102,6 +99,7 @@ int main()
             {
                 level.action();
             }
+            level.getTextInput(event);
             level.draw();
         }
 
@@ -121,10 +119,6 @@ int main()
                 return 0;
             }
         }
-        /////////
-
-        tb.drawTo(window);
-        /////////
         window.display();
     }
 
