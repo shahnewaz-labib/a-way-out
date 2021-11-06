@@ -1,6 +1,7 @@
 #include "../include/grid.hpp"
 #include "../include/node.hpp"
 #include "../include/menu.hpp"
+#include "../include/game.hpp"
 #include <iostream>
 using namespace std;
 
@@ -333,8 +334,7 @@ void Grid::takeInput(){
                         solveGame();
                         break;
                     case itemType::Back:
-                        extern state currentState;
-                        currentState = inMenu;
+                        Game::setState(state::inMenu);
                         break;
                 }
             }

@@ -1,8 +1,10 @@
 #include "../include/menu.hpp"
+#include "../include/game.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <cstdlib>
 
 extern state currentState;
 
@@ -69,15 +71,17 @@ void MainMenu::action() {
         if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             switch (btn->getButtonType()) {
                 case Play:
-                    extern bool playButtonClicked;
-                    playButtonClicked = 1;
-                    currentState = inPlay; break;
+                    Game::playButtonClicked = 1;
+                    Game::setState(state::inPlay);
+                    break;
                 case Level_Select:
-                    currentState = inLevelSelect; break;
+                    Game::setState(state::inLevelSelect);
+                    break;
                 case About:
-                    currentState = inAbout; break;
+                    Game::setState(state::inAbout);
+                    break;
                 case Exit:
-                    currentState = endProgram; break;
+                    Game::setState(state::endProgram);
                     break;
                 default:
                     break;

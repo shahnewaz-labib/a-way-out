@@ -1,4 +1,5 @@
 #include "../include/level_menu.hpp"
+#include "../include/game.hpp"
 extern state currentState;
 
 
@@ -86,7 +87,7 @@ void Level_Select_Menu::action(){
                 case BackToMenu:
                     while(sf::Mouse::isButtonPressed(sf::Mouse::Left));
                     for(auto &i:tb) i->getValue(); // rectification
-                    currentState = inMenu;
+                    Game::setState(state::inMenu);
                     break;
                  default:
                     currentSelected = btn->getButtonType();

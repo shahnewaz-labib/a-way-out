@@ -7,7 +7,7 @@ class Level_Select_Menu : public Menu {
     buttonType currentSelected;
     sf::Font ft;
 public:
-    Grid* GameGrid;
+//     Grid* GameGrid;
     Level_Select_Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     std::string getCurrentTypeString();
     void updateCurrentTypeText();

@@ -7,7 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <string>
 
-enum state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
+enum class state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
 
 class Menu {
 protected:
