@@ -8,15 +8,16 @@
 
 extern state currentState;
 
-MainMenu::MainMenu(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
-    set(window, titleString, titlePos_y, buttonPos, padding);
+MainMenu::MainMenu(Game *game,sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+    set(game,window, titleString, titlePos_y, buttonPos, padding);
 }
 
 
 
-void Menu::set(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+void Menu::set(Game *game,sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
     this->window = window;
     this->padding = padding;
+    this->game = game;
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
     adjustTittle(sf::Vector2f(window->getSize().x/2.0,titlePos_y),titleString);
@@ -71,17 +72,17 @@ void MainMenu::action() {
         if(btn->checkHover(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             switch (btn->getButtonType()) {
                 case Play:
-                    Game::playButtonClicked = 1;
-                    Game::setState(state::inPlay);
+                    game->playButtonClicked = 1;
+                    game->setState(state::inPlay);
                     break;
                 case Level_Select:
-                    Game::setState(state::inLevelSelect);
+                    game->setState(state::inLevelSelect);
                     break;
                 case About:
-                    Game::setState(state::inAbout);
+                    game->setState(state::inAbout);
                     break;
                 case Exit:
-                    Game::setState(state::endProgram);
+                    game->setState(state::endProgram);
                     break;
                 default:
                     break;

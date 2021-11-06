@@ -2,9 +2,11 @@
 #include "item.hpp"
 #include <vector>
 class Node;
+class Game;
 
 class Grid {
 private:
+    Game *game;
 	std::vector <std::vector<int>> grid;
 	std::vector <std::vector<bool>> visited;
     std::vector <sf::Vector2i> visitedPath;
@@ -41,7 +43,7 @@ public:
     }
 
     static int dx[], dy[];
-	Grid(int N, int M, sf::RenderWindow *window);
+	Grid(int N, int M,Game *game, sf::RenderWindow *window);
 // 	Grid(int N, int M, sf::RenderWindow *window,sf::Vector2f upperLeftCorner,sf::Vector2f bottomRightCorner);
     void setBoundary(sf::Vector2f upperLeftCorner,sf::Vector2f bottomRightCorner);
     // changing boundary would require to run scaleItems() and adjustNodes()

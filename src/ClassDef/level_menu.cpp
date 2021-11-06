@@ -3,8 +3,8 @@
 extern state currentState;
 
 
-Level_Select_Menu::Level_Select_Menu(sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
-    set(window, titleString, titlePos_y, buttonPos, padding);
+Level_Select_Menu::Level_Select_Menu(Game *game,sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
+    set(game,window, titleString, titlePos_y, buttonPos, padding);
     ft.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     currentTypeText.setFont(sourceCode);
     currentTypeText.setCharacterSize(30);
@@ -87,7 +87,7 @@ void Level_Select_Menu::action(){
                 case BackToMenu:
                     while(sf::Mouse::isButtonPressed(sf::Mouse::Left));
                     for(auto &i:tb) i->getValue(); // rectification
-                    Game::setState(state::inMenu);
+                    game->setState(state::inMenu);
                     break;
                  default:
                     currentSelected = btn->getButtonType();

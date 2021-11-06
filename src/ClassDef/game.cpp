@@ -2,17 +2,16 @@
 #include "../include/game.hpp"
 #include "../include/menu.hpp"
 
-bool Game::playButtonClicked = 0;
-state Game::currentState = state::inMenu;
+bool playButtonClicked = 0;
 
 Game::Game(double Width,double Height):Width(Width),Height(Height) {
     srand(time(NULL));
 
     window = new sf::RenderWindow (sf::VideoMode(Width, Height), "A Way Out", sf::Style::Close);
-    menu = new MainMenu(window, "A Way Out", 150, sf::Vector2f(Width / 2.0, Height - 150), 15);
-    level = new Level_Select_Menu(window, "Select Type", 150, sf::Vector2f(Width / 2.0 - 70, Height - 150), 15);
+    menu = new MainMenu(this,window, "A Way Out", 150, sf::Vector2f(Width / 2.0, Height - 150), 15);
+    level = new Level_Select_Menu(this,window, "Select Type", 150, sf::Vector2f(Width / 2.0 - 70, Height - 150), 15);
 
-    grid = new Grid(N, M, window);
+    grid = new Grid(N, M, this,window);
 
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel

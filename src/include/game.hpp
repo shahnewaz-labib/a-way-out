@@ -10,19 +10,23 @@
 
 class Game {
     double Width,Height;
-    static state currentState;
+    state currentState=state::inMenu;
     int N=8,M=6;
     bool isWindowFocused = true;
     sf::RenderWindow *window;
     MainMenu *menu;
     Level_Select_Menu *level;
     Grid *grid;
+    bool playButtonClicked;
+    void setState(state st);
 public:
     Game(double Width=500,double Height=700);
-    static void setState(state st);
-    static bool playButtonClicked;
     void play();
     void quit();
+
+    friend MainMenu;
+    friend Level_Select_Menu;
+    friend Grid;
 };
 
 

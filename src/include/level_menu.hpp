@@ -4,11 +4,10 @@
 class Level_Select_Menu : public Menu {
     sf::Text currentTypeText;
     std::vector<TextBox*>tb;
-    buttonType currentSelected;
+    buttonType currentSelected = Random;
     sf::Font ft;
 public:
-//     Grid* GameGrid;
-    Level_Select_Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
+    Level_Select_Menu(Game *game,sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     std::string getCurrentTypeString();
     void updateCurrentTypeText();
     void addButtons();

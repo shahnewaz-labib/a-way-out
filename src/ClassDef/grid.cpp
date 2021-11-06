@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-Grid::Grid(int n, int m, sf::RenderWindow *W) : window(W){
+Grid::Grid(int n, int m, Game *game,sf::RenderWindow *W): game(game), window(W){
     Node::setGameGrid(this);
     setBoundary(sf::Vector2f(0,0), sf::Vector2f(window->getSize()));
     boundary.setFillColor(sf::Color::Transparent);
@@ -334,7 +334,7 @@ void Grid::takeInput(){
                         solveGame();
                         break;
                     case itemType::Back:
-                        Game::setState(state::inMenu);
+                        game->setState(state::inMenu);
                         break;
                 }
             }

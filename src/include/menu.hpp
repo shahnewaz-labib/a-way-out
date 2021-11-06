@@ -1,16 +1,18 @@
 #pragma once
 #include "button.hpp"
-#include "../include/text_input.hpp"
-#include "../include/grid.hpp"
+#include "text_input.hpp"
+#include "grid.hpp"
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <string>
+class Game;
 
 enum class state {inMenu, inPlay, inAbout, inLevelSelect, endProgram};
 
 class Menu {
 protected:
+    Game *game;
     sf::RenderWindow* window;
     std::vector <Button*> Buttons;
     sf::Text title;
@@ -21,7 +23,7 @@ protected:
     //static sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
 public:
 //     Menu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
-    void set(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
+    void set(Game *game,sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     virtual void draw();
     virtual void addButtons() = 0;
     virtual void action() = 0;
@@ -33,7 +35,7 @@ public:
 
 class MainMenu : public Menu {
 public:
-    MainMenu(sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
+    MainMenu(Game *game,sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     void addButtons();
     void action();
 };
