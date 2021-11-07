@@ -19,10 +19,10 @@ class Game {
     Grid *grid;
     bool playButtonClicked;
     void setState(state st);
-    static bool day;
+    bool day;
     static sf::Color dayBGCol, dayHoverCol, dayTextCol;
     static sf::Color nightBGCol, nightHoverCol, nightTextCol;
-    static sf::Color curBGCol, curHoverCol, curTextCol;
+    sf::Color curBGCol, curHoverCol, curTextCol;
 public:
     Game(double Width=500,double Height=700);
     void play();
@@ -32,10 +32,10 @@ public:
     friend Level_Select_Menu;
     friend Grid;
     friend Menu;
-    static sf::Color getBGCol();
-    static sf::Color getHoverColor();
-    static sf::Color getTextColor();
-    static sf::Color getInvertedTextColor();
+    sf::Color getBGCol();
+    sf::Color getHoverColor();
+    sf::Color getTextColor();
+    sf::Color getInvertedTextColor();
 };
 
 

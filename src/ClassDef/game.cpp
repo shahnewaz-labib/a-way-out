@@ -9,14 +9,14 @@ sf::Color Game::nightBGCol = sf::Color(18, 18, 18, 255);
 sf::Color Game::nightHoverCol = sf::Color(27, 57, 251, 255);
 sf::Color Game::nightTextCol = sf::Color::White;
 
-sf::Color Game::curBGCol = dayBGCol;
-sf::Color Game::curHoverCol = dayHoverCol;
-sf::Color Game::curTextCol = dayTextCol;
-
-bool Game::day = true;
 
 
 Game::Game(double Width,double Height):Width(Width),Height(Height) {
+    curBGCol = dayBGCol;
+    curHoverCol = dayHoverCol;
+    curTextCol = dayTextCol;
+
+    bool day = true;
     srand(time(NULL));
 
     window = new sf::RenderWindow (sf::VideoMode(Width, Height), "A Way Out", sf::Style::Close);

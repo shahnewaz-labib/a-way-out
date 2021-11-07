@@ -1,12 +1,14 @@
 #pragma once
 #include "game_drawable.hpp"
 #include <SFML/System/Vector2.hpp>
+class Game;
 
 enum buttonType { Play,Level_Select,About,Exit,Random,Level,Dimension,BackToMenu };
 
 class Button : public Game_Drawable
 {
 private:
+    Game *game;
     buttonType Type;
     sf::RectangleShape box;
     sf::Text txt;
@@ -15,7 +17,7 @@ private:
     void centerText();
 
 public:
-    Button(buttonType T,sf::RenderWindow *_win, std::string _txt);
+    Button(Game *game,buttonType T,sf::RenderWindow *_win, std::string _txt);
     void setFont(sf::Font& _ft);
     void setFontSize(unsigned int _size);
     void setFillColor(sf::Color _col);

@@ -12,7 +12,7 @@ void Button::centerText()
 }
 
 
-Button::Button(buttonType T,sf::RenderWindow *_win, std::string _txt) : Game_Drawable(_win)
+Button::Button(Game *game,buttonType T,sf::RenderWindow *_win, std::string _txt) : Game_Drawable(_win),game(game)
 {
     Type = T;
 
@@ -53,13 +53,13 @@ void Button::fitBox()
 
 bool Button::checkHover(sf::Vector2i mousePos) {
     if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        box.setFillColor(Game::getHoverColor());
-        txt.setFillColor(Game::getInvertedTextColor());
+        box.setFillColor(game->getHoverColor());
+        txt.setFillColor(game->getInvertedTextColor());
         return true;
     }
     else {
-        box.setFillColor(Game::getBGCol());
-        txt.setFillColor(Game::getTextColor());
+        box.setFillColor(game->getBGCol());
+        txt.setFillColor(game->getTextColor());
         return false;
     }
 }

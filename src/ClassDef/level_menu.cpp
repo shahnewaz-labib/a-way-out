@@ -109,10 +109,10 @@ void Level_Select_Menu::action(){
 
 
 void Level_Select_Menu::addButtons(){
-    Buttons.push_back(new Button(BackToMenu,window,"Menu"));
-    Buttons.push_back(new Button(Dimension,window,"Dimension"));
-    Buttons.push_back(new Button(Level,window,"Level"));
-    Buttons.push_back(new Button(Random,window,"Random"));
+    Buttons.push_back(new Button(game,BackToMenu,window,"Menu"));
+    Buttons.push_back(new Button(game,Dimension,window,"Dimension"));
+    Buttons.push_back(new Button(game,Level,window,"Level"));
+    Buttons.push_back(new Button(game,Random,window,"Random"));
 }
 
 

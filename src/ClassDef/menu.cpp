@@ -25,17 +25,17 @@ void Menu::set(Game *game,sf::RenderWindow *window,std::string titleString,float
 
 void MainMenu::addButtons(){
     int padding = 15;
-    Buttons.push_back(new Button(Exit,window,"Exit"));
-    Buttons.push_back(new Button(About,window, "About"));
-    Buttons.push_back(new Button(Level_Select,window, "Select Level"));
-    Buttons.push_back(new Button(Play,window, "Play"));
+    Buttons.push_back(new Button(game,Exit,window,"Exit"));
+    Buttons.push_back(new Button(game,About,window, "About"));
+    Buttons.push_back(new Button(game,Level_Select,window, "Select Level"));
+    Buttons.push_back(new Button(game,Play,window, "Play"));
     Items.push_back(new Item(window, sf::Vector2f(90.0, 45.0), "Assets/toggle.png", itemType::DayNight, sf::Vector2f(game->Width - padding - 45.0, game->Height - padding - 22.5)));
 }
 
 
 void Menu::adjustTittle(sf::Vector2f pos,std::string titleString){
     title = sf::Text(titleString, sourceCode, 62);
-    title.setFillColor(Game::getTextColor());
+    title.setFillColor(game->getTextColor());
     title.setLetterSpacing(0.75);
     centerText(title, pos);
 }
@@ -98,8 +98,8 @@ void MainMenu::action() {
         if(item->contains(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             while(sf::Mouse::isButtonPressed(sf::Mouse::Left));
             game->toggleDayNight();
-            item->setTextureRect(!Game::day);
-            title.setFillColor(Game::getTextColor());
+            item->setTextureRect(!game->day);
+            title.setFillColor(game->getTextColor());
         }
     }
 }
