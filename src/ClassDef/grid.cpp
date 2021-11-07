@@ -16,6 +16,7 @@ Grid::Grid(int n, int m, Game *game,sf::RenderWindow *W): game(game), window(W){
 }
 
 void Grid::regenGrid(int N, int M,int tries){
+    visitedNodes = 1;
     n = N, m = M;
 	grid.assign(n, vector<int>(m, -1));
     Nodes.assign(n,vector<Node*>(m));
@@ -316,7 +317,7 @@ void Grid::solveGame(){
 
         addPath(sf::Vector2i(i,j));
     }
-
+    visitedNodes = numberOfVisitableNodes-1;
 }
 
 void Grid::takeInput(){
@@ -358,6 +359,7 @@ void Grid::takeInput(){
     else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         removePath(pos);
     }
+    std::cout<<visitedNodes<<", "<<numberOfVisitableNodes<<'\n';
 
 }
 

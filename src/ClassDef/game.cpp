@@ -106,7 +106,7 @@ void Game::play(){
                     default:
                         break;
                 }
-                currentState = state::inPlay;
+//                 currentState = state::inPlay;
                 playButtonClicked = 1;
             }
         }
