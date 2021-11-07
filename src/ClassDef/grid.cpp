@@ -359,8 +359,6 @@ void Grid::takeInput(){
     else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         removePath(pos);
     }
-    std::cout<<visitedNodes<<", "<<numberOfVisitableNodes<<'\n';
-
 }
 
 void Grid::draw(){

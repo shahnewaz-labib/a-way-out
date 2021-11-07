@@ -35,7 +35,7 @@ void MainMenu::addButtons(){
 
 void Menu::adjustTittle(sf::Vector2f pos,std::string titleString){
     title = sf::Text(titleString, sourceCode, 62);
-    title.setFillColor(getTextColor());
+    title.setFillColor(Game::getTextColor());
     title.setLetterSpacing(0.75);
     centerText(title, pos);
 }
@@ -49,6 +49,7 @@ void Menu::centerText(sf::Text &txt, sf::Vector2f pos){
 void Menu::adjustButtons(sf::Vector2f pos,int padding){
     for(auto btn : Buttons) {
         btn->setFont(liberationMono);
+        btn->setTextColor(game->curTextCol);
         btn->setFontSize(40);
         btn->setLetterSpacing(.75);
         btn->fitBox();
@@ -59,7 +60,7 @@ void Menu::adjustButtons(sf::Vector2f pos,int padding){
 
 void Menu::draw() {
 
-    window->clear(getBGCol());
+    window->clear(game->getBGCol());
     window->draw(title);
 
     for(auto btn:Buttons)
@@ -94,10 +95,12 @@ void MainMenu::action() {
     }
 
     for(auto item:Items) {
-        if(item->contains(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            item->setTextureRect(1);
-        else
-            item->setTextureRect(0);
+        if(item->contains(mousePos) and sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            while(sf::Mouse::isButtonPressed(sf::Mouse::Left));
+            game->toggleDayNight();
+            item->setTextureRect(!Game::day);
+            title.setFillColor(Game::getTextColor());
+        }
     }
 }
 

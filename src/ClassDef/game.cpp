@@ -2,8 +2,19 @@
 #include "../include/game.hpp"
 #include "../include/menu.hpp"
 
-sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
-sf::Color nightBGCol = sf::Color(18, 18, 18, 255), nightHoverColor = sf::Color(27, 57, 251, 255), nightTextColor = sf::Color::White;
+sf::Color Game::dayBGCol = sf::Color(216, 226, 233, 255);
+sf::Color Game::dayHoverCol = sf::Color(69, 72, 130, 255);
+sf::Color Game::dayTextCol = sf::Color::Black;
+sf::Color Game::nightBGCol = sf::Color(18, 18, 18, 255);
+sf::Color Game::nightHoverCol = sf::Color(27, 57, 251, 255);
+sf::Color Game::nightTextCol = sf::Color::White;
+
+sf::Color Game::curBGCol = dayBGCol;
+sf::Color Game::curHoverCol = dayHoverCol;
+sf::Color Game::curTextCol = dayTextCol;
+
+bool Game::day = true;
+
 
 Game::Game(double Width,double Height):Width(Width),Height(Height) {
     srand(time(NULL));
@@ -23,6 +34,23 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
 
 void Game::toggleDayNight() {
     day = !day;
+    curBGCol = day? dayBGCol : nightBGCol;
+    curHoverCol = day? dayHoverCol : nightHoverCol;
+    curTextCol = day? dayTextCol : nightTextCol;
+}
+sf::Color Game::getBGCol() {
+    return curBGCol;
+}
+sf::Color Game::getHoverColor() {
+    return curHoverCol;
+}
+
+sf::Color Game::getTextColor() {
+    return curTextCol;
+}
+
+sf::Color Game::getInvertedTextColor() {
+    return day ? sf::Color::White : sf::Color::Black;
 }
 
 void Game::play(){

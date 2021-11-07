@@ -31,8 +31,3 @@ public:
     std::string getText() const;
     buttonType getButtonType(); 
 };
-
-sf::Color getBGCol();
-sf::Color getHoverColor();
-sf::Color getTextColor();
-sf::Color getInvertedTextColor();

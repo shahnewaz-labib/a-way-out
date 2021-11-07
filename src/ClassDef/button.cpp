@@ -1,24 +1,8 @@
 #include "../include/button.hpp"
+#include "../include/game.hpp"
 #include <SFML/System/Vector2.hpp>
 
 bool day = 0;
-
-sf::Color getBGCol() {
-    return day ? sf::Color(216, 226, 233, 255) : sf::Color::Black;
-}
-
-sf::Color getHoverColor() {
-    return day ? sf::Color(69, 72, 130, 255) : sf::Color::White;
-}
-
-sf::Color getTextColor() {
-    return day ? sf::Color::Black : sf::Color::White;
-}
-
-sf::Color getInvertedTextColor() {
-    return day ? sf::Color::White : sf::Color::Black;
-}
-
 
 void Button::centerText()
 {
@@ -69,13 +53,13 @@ void Button::fitBox()
 
 bool Button::checkHover(sf::Vector2i mousePos) {
     if(box.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        box.setFillColor(getHoverColor());
-        txt.setFillColor(getInvertedTextColor());
+        box.setFillColor(Game::getHoverColor());
+        txt.setFillColor(Game::getInvertedTextColor());
         return true;
     }
     else {
-        box.setFillColor(getBGCol());
-        txt.setFillColor(getTextColor());
+        box.setFillColor(Game::getBGCol());
+        txt.setFillColor(Game::getTextColor());
         return false;
     }
 }
