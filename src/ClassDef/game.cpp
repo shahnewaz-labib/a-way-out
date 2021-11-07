@@ -2,7 +2,8 @@
 #include "../include/game.hpp"
 #include "../include/menu.hpp"
 
-bool playButtonClicked = 0;
+sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
+sf::Color nightBGCol = sf::Color(18, 18, 18, 255), nightHoverColor = sf::Color(27, 57, 251, 255), nightTextColor = sf::Color::White;
 
 Game::Game(double Width,double Height):Width(Width),Height(Height) {
     srand(time(NULL));
@@ -20,7 +21,7 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
     day = true;
 }
 
-void toggleDayNight() {
+void Game::toggleDayNight() {
     day = !day;
 }
 
