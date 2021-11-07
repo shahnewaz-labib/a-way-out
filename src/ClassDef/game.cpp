@@ -17,6 +17,11 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
     window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+    day = true;
+}
+
+void toggleDayNight() {
+    day = !day;
 }
 
 void Game::play(){
