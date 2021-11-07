@@ -15,6 +15,7 @@ protected:
     Game *game;
     sf::RenderWindow* window;
     std::vector <Button*> Buttons;
+    std::vector <Item*> Items;
     sf::Text title;
     sf::Font sourceCode, liberationMono;
     sf::Event ev;

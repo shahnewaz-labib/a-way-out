@@ -3,7 +3,7 @@
 
 using namespace sf;
 
-enum itemType { Reset,Solve,Back };
+enum itemType { Reset,Solve,Back, DayNight };
 
 class Item : public Game_Drawable {
 protected:

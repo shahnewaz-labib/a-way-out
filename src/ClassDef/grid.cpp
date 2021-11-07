@@ -400,7 +400,7 @@ void Grid::adjustHeaders(){
     setBoundary(sf::Vector2f(0,size.y+padding), sf::Vector2f(wx,wy));
     sf::Vector2f pos = sf::Vector2f(wx-size.x/2.0-padding,padding+size.y/2.0);
     
-    buttons.push_back(new Item(window,size,"Assets/reset.png",Reset,pos));
+    buttons.push_back(new Item(window,size,"Assets/reset.png",DayNight,pos));
 
     pos.x -= padding + size.x;
     buttons.push_back(new Item(window,size,"Assets/solve.png",Solve,pos));

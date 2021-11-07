@@ -12,8 +12,6 @@ MainMenu::MainMenu(Game *game,sf::RenderWindow *window,std::string titleString,f
     set(game,window, titleString, titlePos_y, buttonPos, padding);
 }
 
-
-
 void Menu::set(Game *game,sf::RenderWindow *window,std::string titleString,float titlePos_y,sf::Vector2f buttonPos,int padding) {
     this->window = window;
     this->padding = padding;
@@ -26,10 +24,12 @@ void Menu::set(Game *game,sf::RenderWindow *window,std::string titleString,float
 }
 
 void MainMenu::addButtons(){
+    int padding = 200;
     Buttons.push_back(new Button(Exit,window,"Exit"));
     Buttons.push_back(new Button(About,window, "About"));
     Buttons.push_back(new Button(Level_Select,window, "Select Level"));
     Buttons.push_back(new Button(Play,window, "Play"));
+    Items.push_back(new Item(window, sf::Vector2f(100.0, 50.0), "Assets/toggle.png", itemType::DayNight, sf::Vector2f(game->Width - padding - 30.0, game->Height - padding - 15.0)));
 }
 
 
@@ -64,6 +64,9 @@ void Menu::draw() {
 
     for(auto btn:Buttons)
         btn->draw();
+
+    for(auto item:Items)
+        item->draw();
 }
 
 void MainMenu::action() {
