@@ -362,6 +362,7 @@ void Grid::takeInput(){
 }
 
 void Grid::draw(){
+    window->clear(game->getBGCol());
     window->draw(boundary);
     window->draw(gridBox);
 
