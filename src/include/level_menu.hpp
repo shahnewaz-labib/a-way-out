@@ -1,5 +1,6 @@
 #pragma once
 #include "../include/menu.hpp"
+#include "button.hpp"
 
 class Level_Select_Menu : public Menu {
     sf::Text currentTypeText;
@@ -17,4 +18,7 @@ public:
     void draw();
     void turnOffExcept(int index);
     void updateDimension(int &N,int &M);
+    buttonType getCurrentSelected();
+    int getCurrentLevel();
+    void setCurrentLevel(int _level);
 };

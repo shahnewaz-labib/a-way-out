@@ -136,3 +136,15 @@ void Level_Select_Menu::updateDimension(int &N, int &M){
         M = rand() % 7 + 5;
     }
 }
+
+buttonType Level_Select_Menu::getCurrentSelected(){
+    return currentSelected;
+}
+
+int Level_Select_Menu::getCurrentLevel(){
+    return tb[0]->getValue();
+}
+
+void Level_Select_Menu::setCurrentLevel(int _level){
+    tb[0]->setText(std::to_string(_level));
+}

@@ -99,8 +99,15 @@ void Game::play(){
 
             if (grid->isGameSolved())
             {
-                std::cout << "Done"
-                          << "\n";
+                switch(level->getCurrentSelected()){
+                    case Level:
+                        level->setCurrentLevel(level->getCurrentLevel()+1);
+                        break;
+                    default:
+                        break;
+                }
+                currentState = state::inPlay;
+                playButtonClicked = 1;
             }
         }
         window->display();
