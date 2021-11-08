@@ -9,9 +9,8 @@ sf::Color Game::nightBGCol = sf::Color(18, 18, 18, 255);
 sf::Color Game::nightHoverCol = sf::Color(27, 57, 251, 255);
 sf::Color Game::nightTextCol = sf::Color::White;
 
-
-
-Game::Game(double Width,double Height):Width(Width),Height(Height) {
+Game::Game(double Width, double Height) : Width(Width), Height(Height)
+{
     curBGCol = dayBGCol;
     curHoverCol = dayHoverCol;
     curTextCol = dayTextCol;
@@ -19,11 +18,11 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
     day = true;
     srand(time(NULL));
 
-    window = new sf::RenderWindow (sf::VideoMode(Width, Height), "A Way Out", sf::Style::Close);
-    menu = new MainMenu(this,window, "A Way Out", 150, sf::Vector2f(Width / 2.0, Height - 150), 15);
-    level = new Level_Select_Menu(this,window, "Select Type", 150, sf::Vector2f(Width / 2.0 - 70, Height - 150), 15);
+    window = new sf::RenderWindow(sf::VideoMode(Width, Height), "A Way Out", sf::Style::Close);
+    menu = new MainMenu(this, window, "A Way Out", 150, sf::Vector2f(Width / 2.0, Height - 150), 15);
+    level = new Level_Select_Menu(this, window, "Select Type", 150, sf::Vector2f(Width / 2.0 - 70, Height - 150), 15);
 
-    grid = new Grid(N, M, this,window);
+    grid = new Grid(N, M, this, window);
 
     sf::Image icon;
     icon.loadFromFile("Assets/icon.png"); // File/Image/Pixel
@@ -32,43 +31,53 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
     day = true;
 }
 
-void Game::toggleDayNight() {
+void Game::toggleDayNight()
+{
     day = !day;
-    curBGCol = day? dayBGCol : nightBGCol;
-    curHoverCol = day? dayHoverCol : nightHoverCol;
-    curTextCol = day? dayTextCol : nightTextCol;
+    curBGCol = day ? dayBGCol : nightBGCol;
+    curHoverCol = day ? dayHoverCol : nightHoverCol;
+    curTextCol = day ? dayTextCol : nightTextCol;
 }
-sf::Color Game::getBGCol() {
+sf::Color Game::getBGCol()
+{
     return curBGCol;
 }
-sf::Color Game::getHoverColor() {
+sf::Color Game::getHoverColor()
+{
     return curHoverCol;
 }
 
-sf::Color Game::getTextColor() {
+sf::Color Game::getTextColor()
+{
     return curTextCol;
 }
 
-sf::Color Game::getInvertedTextColor() {
+sf::Color Game::getInvertedTextColor()
+{
     return day ? sf::Color::White : sf::Color::Black;
 }
 
-sf::Color Game::getPathColor() {
+sf::Color Game::getPathColor()
+{
     return sf::Color(127, 57, 251, 255);
 }
 
-sf::Color Game::getHeadColor() {
+sf::Color Game::getHeadColor()
+{
     return sf::Color(207, 102, 121, 255);
 }
 
-sf::Color Game::getVisNodeColor() {
+sf::Color Game::getVisNodeColor()
+{
     return day ? sf::Color(40, 40, 40, 150) : sf::Color::White;
 }
 
-void Game::play(){
+void Game::play()
+{
     while (window->isOpen())
     {
-        if(playButtonClicked){
+        if (playButtonClicked)
+        {
             level->updateDimension(N, M);
             grid->regenGrid(N, M);
             playButtonClicked = 0;
@@ -97,7 +106,7 @@ void Game::play(){
                     window->close();
                 }
             }
-            if (currentState == state::inLevelSelect && sf::Event::TextEntered)
+            if (currentState == state::inLevelSelect && event.type == sf::Event::TextEntered)
             {
                 level->getTextInput(event.text.unicode);
             }
@@ -105,12 +114,12 @@ void Game::play(){
 
         window->clear();
 
-        if (currentState == state:: endProgram)
+        if (currentState == state::endProgram)
         {
             break;
         }
 
-        if (currentState == state:: inMenu)
+        if (currentState == state::inMenu)
         {
             if (isWindowFocused)
             {
@@ -119,7 +128,7 @@ void Game::play(){
             menu->draw();
         }
 
-        else if (currentState == state:: inLevelSelect)
+        else if (currentState == state::inLevelSelect)
         {
             if (isWindowFocused)
             {
@@ -128,7 +137,7 @@ void Game::play(){
             level->draw();
         }
 
-        else if (currentState == state:: inPlay)
+        else if (currentState == state::inPlay)
         {
             if (isWindowFocused)
             {
@@ -139,14 +148,15 @@ void Game::play(){
 
             if (grid->isGameSolved())
             {
-                switch(level->getCurrentSelected()){
-                    case Level:
-                        level->setCurrentLevel(level->getCurrentLevel()+1);
-                        break;
-                    default:
-                        break;
+                switch (level->getCurrentSelected())
+                {
+                case Level:
+                    level->setCurrentLevel(level->getCurrentLevel() + 1);
+                    break;
+                default:
+                    break;
                 }
-//                 currentState = state::inPlay;
+                //                 currentState = state::inPlay;
                 playButtonClicked = 1;
             }
         }
@@ -154,10 +164,12 @@ void Game::play(){
     }
 }
 
-void Game::quit(){
+void Game::quit()
+{
     currentState = state::endProgram;
 }
 
-void Game::setState(state st){
+void Game::setState(state st)
+{
     currentState = st;
 }
