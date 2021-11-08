@@ -134,6 +134,7 @@ void Game::play()
             {
                 level->action();
             }
+            level->updateColors();
             level->draw();
         }
 

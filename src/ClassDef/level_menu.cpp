@@ -9,12 +9,20 @@ Level_Select_Menu::Level_Select_Menu(Game *game,sf::RenderWindow *window,std::st
     currentTypeText.setFont(sourceCode);
     currentTypeText.setCharacterSize(30);
     currentTypeText.setString("Current Type : "+getCurrentTypeString());
+    currentTypeText.setFillColor(game->getTextColor());
     
     sf::Vector2f pos = title.getPosition();
     pos.y += title.getLocalBounds().height/2.0 + padding*3;
     centerText(currentTypeText, pos);
 
     adjustTextBox();
+}
+
+void Level_Select_Menu::updateColors() {
+    if(title.getFillColor() != game->getTextColor()) {
+        title.setFillColor(game->getTextColor());
+        currentTypeText.setFillColor(game->getTextColor());
+    }
 }
 
 void Level_Select_Menu::adjustTextBox(){

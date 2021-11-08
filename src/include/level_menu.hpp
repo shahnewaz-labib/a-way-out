@@ -21,4 +21,5 @@ public:
     buttonType getCurrentSelected();
     int getCurrentLevel();
     void setCurrentLevel(int _level);
+    void updateColors();
 };
