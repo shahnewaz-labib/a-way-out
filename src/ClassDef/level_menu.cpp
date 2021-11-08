@@ -23,7 +23,7 @@ void Level_Select_Menu::adjustTextBox(){
 
     sf::Vector2f btnPos = Buttons[2]->getPosition();
     sf::Vector2f pos = btnPos + sf::Vector2f(Buttons[2]->getSize().x/2.0 + padding,-Buttons[2]->getSize().y/2.0);
-    tb.push_back( new TextBox(ft, pos, chrSize, sf::Color::White, 4,1,100, 0) );
+    tb.push_back( new TextBox(ft, pos, chrSize, sf::Color::White, 4,1,game->numberOfLevels, 0) );
     
     float diff = Buttons[2]->getSize().y-tb[0]->getSize().y;
     if(diff<0) diff = 0;
@@ -146,5 +146,8 @@ int Level_Select_Menu::getCurrentLevel(){
 }
 
 void Level_Select_Menu::setCurrentLevel(int _level){
+    if(tb[0]->max < _level){
+        tb[0]->max = _level;
+    }
     tb[0]->setText(std::to_string(_level));
 }

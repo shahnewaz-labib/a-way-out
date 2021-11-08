@@ -29,6 +29,8 @@ private:
     Item *reset,*solve;
 
 public:
+    void updateGrid(std::vector<std::vector<int>> input);
+    friend Game;
     class row
     {
         Grid &_a;
@@ -69,7 +71,7 @@ public:
     void addPath(sf::Vector2i pos);
     void solveGame();
 
-    void regenGrid(int n,int m,int tries=1000);
+    void regenGrid(int n,int m,int tries=1000,std::vector<std::vector<int>> input={});
 
     friend class Node;
     friend class VisitableNode;

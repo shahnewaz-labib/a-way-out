@@ -3,6 +3,7 @@
 #include "../include/menu.hpp"
 #include "../include/game.hpp"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 Grid::Grid(int n, int m, Game *game,sf::RenderWindow *W): game(game), window(W){
@@ -15,15 +16,19 @@ Grid::Grid(int n, int m, Game *game,sf::RenderWindow *W): game(game), window(W){
     adjustHeaders();
 }
 
-void Grid::regenGrid(int N, int M,int tries){
+void Grid::regenGrid(int N, int M,int tries,std::vector<std::vector<int>> input){
     visitedNodes = 1;
-    n = N, m = M;
-	grid.assign(n, vector<int>(m, -1));
-    Nodes.assign(n,vector<Node*>(m));
-    visited.assign(n, vector<bool>(m, 0));
     visitedPath.clear();
     LinePath.clear();
-    assignGoodGrid(tries);
+    n = N, m = M;
+    if(tries<1){
+        updateGrid(input);
+    } else {
+        grid.assign(n, vector<int>(m, -1));
+        assignGoodGrid(tries);
+    }
+    Nodes.assign(n,vector<Node*>(m));
+    visited.assign(n, vector<bool>(m, 0));
     scaleItems();
     adjustNodes();
 }
@@ -303,8 +308,8 @@ void Grid::addPath(sf::Vector2i pos){
 void Grid::solveGame(){
     removePath(startingCell);
     int i = startingCell.x, j = startingCell.y;
-    
-    while(grid[i][j]<=numberOfVisitableNodes-3){
+    int k=0;
+    while(k<=numberOfVisitableNodes-3){
         int ni,nj;
         for(int k=0;k<4;k++){
             ni = i+dx[k];
@@ -314,7 +319,7 @@ void Grid::solveGame(){
                 break;
             }
         }
-
+        k++;
         addPath(sf::Vector2i(i,j));
     }
     visitedNodes = numberOfVisitableNodes-1;
@@ -407,4 +412,10 @@ void Grid::adjustHeaders(){
     buttons.push_back(new Item(window,size,"Assets/solve.png",Solve,pos));
 
     buttons.push_back(new Item(window,size,"Assets/back.png",Back,sf::Vector2f(padding+size.x/2.0,pos.y)));
+}
+
+void Grid::updateGrid(std::vector<std::vector<int>> input){
+    n = input.size();
+    m = input[0].size();
+    grid = input;
 }

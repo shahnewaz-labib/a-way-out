@@ -22,12 +22,12 @@ private:
   std::ostringstream text;
   bool isSelected = false;
   int limit;
-  int max,min;
 
   void typeText(int ch);
   void backspace();
 
 public:
+  int max,min;
   bool isOn();
   bool contains(sf::Vector2i pos);
   sf::Vector2f getSize();
