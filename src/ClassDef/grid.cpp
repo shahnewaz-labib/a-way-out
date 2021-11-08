@@ -243,22 +243,22 @@ void Grid::adjustNodes(){
             if(Nodes[i][j]!=nullptr) delete Nodes[i][j];
             if (grid[i][j] == -1) //Obstacle
             {
-                Nodes[i][j] = new ObstacleNode(i,j);
+                Nodes[i][j] = new ObstacleNode(i,j, sf::Color(58, 31, 58, 255));
                 Nodes[i][j]->setOutline();
             }
             else if (grid[i][j] == 0) // Source
             {
-                Nodes[i][j] = new VisitableNode(i,j,sf::Color::Blue);
+                Nodes[i][j] = new VisitableNode(i,j,sf::Color(255, 143, 0, 255));
                 visitedPath.emplace_back(sf::Vector2i(i,j));
                 startingCell=sf::Vector2i(i,j);
                 visited[i][j] = 1;
             }
             else if(grid[i][j] == numberOfVisitableNodes-1){ // Finish Node
-                Nodes[i][j] = new VisitableNode(i,j,sf::Color::Cyan);
+                Nodes[i][j] = new VisitableNode(i,j,sf::Color(3, 218, 197, 255));
             } 
             else // Normal Node
             {
-                Nodes[i][j] = new VisitableNode(i,j);
+                Nodes[i][j] = new VisitableNode(i,j, game->getVisNodeColor());
 //                 Nodes[i][j]->setOutline(sf::Color::Black,1);
             }
 
@@ -271,14 +271,14 @@ void Grid::removePath(sf::Vector2i pos){
     if(visited[pos.x][pos.y] && visitedPath.size()>1){
         while(visitedPath.back() != pos) {
             auto last = visitedPath.back();
-            Nodes[last.x][last.y]->setColor(sf::Color::White);
+            Nodes[last.x][last.y]->setColor(game->getVisNodeColor());
             visited[last.x][last.y] = false;
             visitedPath.pop_back();
             LinePath.pop_back();
             visitedNodes--;
         }
         if(pos != startingCell) {
-            Nodes[pos.x][pos.y]->setColor(sf::Color::Red);
+            Nodes[pos.x][pos.y]->setColor(game->getHeadColor());
         }
     }
 }
@@ -289,11 +289,11 @@ void Grid::addPath(sf::Vector2i pos){
        pj=visitedPath.back().y; // Previous Node
 
     if(grid[i][j] !=- 1 && isAdjacentCell(visitedPath.back(), pos) && !visited[i][j]){
-        Nodes[i][j]->setColor(sf::Color::Red);
+        Nodes[i][j]->setColor(game->getHeadColor());
         visited[i][j] = 1;
         visitedNodes++;
         if(visitedPath.size()>1){ // not Source Node
-            Nodes[pi][pj]->setColor(sf::Color::Yellow);
+            Nodes[pi][pj]->setColor(game->getPathColor());
         }
         LinePath.emplace_back(ConnectTwoNodes(visitedPath.back(), pos));
         visitedPath.emplace_back(pos);

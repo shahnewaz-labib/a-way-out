@@ -3,7 +3,7 @@
 
 Grid* Node::GameGrid=NULL;
 
-void Node::CreateNode(int i,int j,sf::Color C=sf::Color::White){
+void Node::CreateNode(int i,int j,sf::Color C){
     shape->setOrigin(GameGrid->tileSize/2.0,GameGrid->tileSize/2.0);
     shape->setPosition(sf::Vector2f( (j+1)*(GameGrid->tileSize+GameGrid->tileGap) - GameGrid->tileSize/2.0,(i+1)*(GameGrid->tileGap+GameGrid->tileSize) - GameGrid->tileSize/2.0) + GameGrid->OffSet);
     shape->setFillColor(C);

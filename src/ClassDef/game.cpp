@@ -16,7 +16,7 @@ Game::Game(double Width,double Height):Width(Width),Height(Height) {
     curHoverCol = dayHoverCol;
     curTextCol = dayTextCol;
 
-    bool day = true;
+    day = true;
     srand(time(NULL));
 
     window = new sf::RenderWindow (sf::VideoMode(Width, Height), "A Way Out", sf::Style::Close);
@@ -51,6 +51,18 @@ sf::Color Game::getTextColor() {
 
 sf::Color Game::getInvertedTextColor() {
     return day ? sf::Color::White : sf::Color::Black;
+}
+
+sf::Color Game::getPathColor() {
+    return sf::Color(127, 57, 251, 255);
+}
+
+sf::Color Game::getHeadColor() {
+    return sf::Color(207, 102, 121, 255);
+}
+
+sf::Color Game::getVisNodeColor() {
+    return day ? sf::Color(40, 40, 40, 150) : sf::Color::White;
 }
 
 void Game::play(){

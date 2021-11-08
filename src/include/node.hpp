@@ -19,7 +19,7 @@ public:
 
 class VisitableNode :public Node {
 public:
-    VisitableNode(int i,int j,sf::Color=sf::Color::White);
+    VisitableNode(int i,int j,sf::Color = sf::Color(40, 40, 40));
 };
 
 class ObstacleNode :public Node {

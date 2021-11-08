@@ -36,6 +36,9 @@ public:
     sf::Color getHoverColor();
     sf::Color getTextColor();
     sf::Color getInvertedTextColor();
+    sf::Color getPathColor();
+    sf::Color getHeadColor();
+    sf::Color getVisNodeColor();
 };
 
 
