@@ -21,7 +21,7 @@ _OBJ=$(OBJ_CPP) $(OBJ_CLASS)
 OBJ=$(filter-out $(EXCLUDE),$(_OBJ))
 
 LIBS=-lsfml-graphics -lsfml-audio -lsfml-system -lsfml-window
-CC=g++ --std=c++17
+CC=g++ -g --std=c++17
 
 Program: $(OBJ)
 	$(CC) $^ -o $@ $(IDIR) $(LIBS)

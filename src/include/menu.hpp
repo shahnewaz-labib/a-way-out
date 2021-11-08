@@ -20,6 +20,7 @@ protected:
     sf::Font sourceCode, liberationMono;
     sf::Event ev;
     sf::Vector2i mousePos;
+    float titlePos_y;
     int padding;
     //static sf::Color dayBGCol = sf::Color(216, 226, 233, 255), dayHoverColor = sf::Color(69, 72, 130, 255), dayTextColor = sf::Color::Black;
 public:
@@ -29,7 +30,7 @@ public:
     virtual void addButtons() = 0;
     virtual void action() = 0;
     void adjustButtons(sf::Vector2f pos,int padding);
-    void adjustTittle(sf::Vector2f pos,std::string titleString);
+    void adjustTittle(sf::Vector2f pos,std::string titleString,int size=62);
     void centerText(sf::Text &txt,sf::Vector2f pos);
     virtual ~Menu();
 };
@@ -39,4 +40,6 @@ public:
     MainMenu(Game *game,sf::RenderWindow* window,std::string titleString,float titlePos,sf::Vector2f buttonPos,int padding);
     void addButtons();
     void action();
+    void setAboutPageText();
+    friend Game;
 };

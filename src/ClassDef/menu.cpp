@@ -1,5 +1,6 @@
 #include "../include/menu.hpp"
 #include "../include/game.hpp"
+#include "../include/item.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
@@ -16,6 +17,7 @@ void Menu::set(Game *game,sf::RenderWindow *window,std::string titleString,float
     this->window = window;
     this->padding = padding;
     this->game = game;
+    this->titlePos_y = titlePos_y;
     sourceCode.loadFromFile("Assets/SourceCodePro-SemiBoldItalic.ttf");
     liberationMono.loadFromFile("Assets/LiberationMono-Regular.ttf");
     adjustTittle(sf::Vector2f(window->getSize().x/2.0,titlePos_y),titleString);
@@ -33,8 +35,8 @@ void MainMenu::addButtons(){
 }
 
 
-void Menu::adjustTittle(sf::Vector2f pos,std::string titleString){
-    title = sf::Text(titleString, sourceCode, 62);
+void Menu::adjustTittle(sf::Vector2f pos,std::string titleString,int size){
+    title = sf::Text(titleString, sourceCode, size);
     title.setFillColor(game->getTextColor());
     title.setLetterSpacing(0.75);
     centerText(title, pos);
@@ -111,4 +113,25 @@ Menu::~Menu() {
         delete btn;
     for(auto item:Items) 
         delete item;
+}
+
+void MainMenu::setAboutPageText(){
+    std::string t = " A Way Out is a puzzle game where the\n player has to get to an end point from\n a starting point following a path\n that fills the whole 2D grid,\n in technical terms, the player\n has to find a hamiltonian path\n when the cells of the grid are\n nodes of a graph.";
+    adjustTittle(sf::Vector2f(window->getSize())/2.0f,t,20);
+
+    Item backBtn = Item(window,sf::Vector2f(40,40),"Assets/back.png",Back,sf::Vector2f(50,50));
+    window->draw(title);
+
+    if(backBtn.contains(sf::Mouse::getPosition(*window))){
+        backBtn.setTextureRect(1);
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            adjustTittle(sf::Vector2f(window->getSize().x/2.0,titlePos_y), "A Way Out",62);
+            window->draw(title);
+            game->setState(state::inMenu);
+        }
+    } else {
+        backBtn.setTextureRect();
+    }
+
+    backBtn.draw();
 }

@@ -112,7 +112,12 @@ void Game::play()
             }
         }
 
-        window->clear();
+        window->clear(getBGCol());
+
+        if(currentState == state::inAbout){
+            menu->setAboutPageText();
+//             window->draw(menu->title);
+        }
 
         if (currentState == state::endProgram)
         {
